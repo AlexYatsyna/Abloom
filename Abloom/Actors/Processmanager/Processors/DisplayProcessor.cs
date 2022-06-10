@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AbloomWorkingNode.Actors
+namespace Abloom.Actors.Processors
 {
-    internal class ProcessManager : UntypedActor
+    internal class DisplayProcessor : UntypedActor
     {
         protected override void OnReceive(object message)
         {

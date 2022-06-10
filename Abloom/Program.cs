@@ -22,7 +22,8 @@ namespace Abloom
 
             var config = ConfigurationFactory.ParseString(File.ReadAllText("D:\\Abloom\\Abloom\\Configs\\App.conf"));
             var system = ActorSystem.Create("msys", config);
-            system.ActorOf<Node>("node");
+            var node = system.ActorOf<Node>("node");
+            node.Tell("start");
 
             system.WhenTerminated.Wait();
         }

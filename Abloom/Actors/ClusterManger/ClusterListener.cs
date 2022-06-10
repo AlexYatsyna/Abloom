@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Abloom.Actors
+namespace Abloom.Actors.ClusterManger
 {
     internal class ClusterListener : UntypedActor
     {
@@ -30,7 +30,7 @@ namespace Abloom.Actors
             {
                 case ClusterEvent.MemberUp member:
                     //Log.Info("\n\nMember is up: {0}\n\n", member.Member);
-                    if(member.Member.Roles.Contains("working-node"))
+                    if (member.Member.Roles.Contains("working-node"))
                         Console.WriteLine("Member is up: {0}\n", member.Member);
                     break;
                 case ClusterEvent.UnreachableMember member:

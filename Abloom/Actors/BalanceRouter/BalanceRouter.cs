@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AbloomWorkingNode.Actors
+namespace Abloom.Actors.BalanceRouter
 {
-    internal class ProcessManager : UntypedActor
+    internal class BalanceRouter : UntypedActor
     {
         protected override void OnReceive(object message)
         {

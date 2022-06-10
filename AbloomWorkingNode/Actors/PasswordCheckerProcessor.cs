@@ -11,7 +11,7 @@ namespace AbloomWorkingNode.Actors
     {
         protected override void OnReceive(object message)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
     }
 }

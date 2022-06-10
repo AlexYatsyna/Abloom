@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Abloom.Actors
+namespace Abloom.Actors.ClusterManger
 {
     internal class ClusterManager : UntypedActor
     {
