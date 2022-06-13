@@ -1,4 +1,5 @@
-﻿using Akka.Actor;
+﻿using Abloom.Messages;
+using Akka.Actor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,10 @@ namespace Abloom.Actors.ClusterManger
         }
         protected override void OnReceive(object message)
         {
+            switch (message)
+            {
+
+            }
             //throw new NotImplementedException();
         }
     }

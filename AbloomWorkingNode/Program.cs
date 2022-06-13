@@ -12,7 +12,7 @@ namespace AbloomWorkingNode
         {
             var config = ConfigurationFactory.ParseString(File.ReadAllText("D:\\Abloom\\AbloomWorkingNode\\Configs\\App.conf"));
             var system = ActorSystem.Create("msys", config);
-            system.ActorOf<ProcessManager>("working-node");
+            system.ActorOf<ProcessManager>("process-manager");
             system.WhenTerminated.Wait();
         }
     }
