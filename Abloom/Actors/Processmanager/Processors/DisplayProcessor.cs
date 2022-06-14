@@ -1,11 +1,7 @@
 ﻿using Abloom.Messages;
 using Akka.Actor;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 
 namespace Abloom.Actors.Processors
@@ -26,7 +22,7 @@ namespace Abloom.Actors.Processors
                 case SetInitialData data:
                     NumberOfPassCombinations = data.NumberOfPassCombinations;
                     PasswordLength = data.PasswordLength;
-                    Context.ActorSelection("../password-generator").Tell(new SendToGeneratePasswords(data.Hash, data.PasswordLength));
+                    Context.ActorSelection("../password-processor").Tell(new SendToGeneratePasswords(data.Hash, data.PasswordLength));
                     break;
 
                 case SetCurrentCombination current:
@@ -40,6 +36,13 @@ namespace Abloom.Actors.Processors
                     timer.AutoReset = true;
                     timer.Enabled = true;
                     break;
+
+                case RespondFinishExecution finished:
+                    timer.Enabled = false;
+                    if(finished.Password != "")
+                        Console.WriteLine($" Password:  {finished.Password} \n Combination number: {CurrentNumberOfComb}");
+                    break;
+
             }
 
         }

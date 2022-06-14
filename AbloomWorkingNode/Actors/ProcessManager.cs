@@ -11,21 +11,20 @@ namespace AbloomWorkingNode.Actors
 {
     internal class ProcessManager : UntypedActor
     {
-        private Serialization serialization = Context.System.Serialization;
+        private IActorRef PasswordCheckerRef { get; set; }
         protected override void PreStart()
         {
-            Console.WriteLine(Self);
+            PasswordCheckerRef = Context.ActorOf<PasswordCheckerProcessor>("password-checker");            
         }
         protected override void OnReceive(object message)
         {
             switch (message)
             {
-                case SendToWorkinNode mes:
-                    Console.WriteLine(Sender);
+                case SendToWorkinNode :
+                    PasswordCheckerRef.Forward(message);
                     break;
             }
             
-            //throw new NotImplementedException();
         }
         
     }

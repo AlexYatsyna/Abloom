@@ -2,11 +2,7 @@
 using Abloom.Actors.Processors;
 using Abloom.Messages;
 using Akka.Actor;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Timers;
 
 namespace Abloom.Actors.Processmanager
 {
@@ -15,11 +11,22 @@ namespace Abloom.Actors.Processmanager
         private IActorRef GetDataRef { get; set; }
         private IActorRef DisplayInfoRef { get; set; }
         private IActorRef PasswordGeneratorRef { get; set; }
+
+        private Timer timer = new Timer();
         protected override void PreStart()
         {
             GetDataRef = Context.ActorOf<GetDataProcessor>("get-data-processor");
             DisplayInfoRef = Context.ActorOf<DisplayProcessor>("display-processor");
-            PasswordGeneratorRef = Context.ActorOf<PasswordGeneratorProcessor>("password-generator");
+            PasswordGeneratorRef = Context.ActorOf<PasswordGeneratorProcessor>("password-processor");
+
+            timer.Interval = 250;
+            timer.AutoReset = true;
+            timer.Elapsed += RequestSendingPasswords;
+        }
+
+        private void RequestSendingPasswords(object source, ElapsedEventArgs e)
+        {
+            PasswordGeneratorRef.Tell("Send");
         }
         protected override void OnReceive(object message)
         {
@@ -31,7 +38,9 @@ namespace Abloom.Actors.Processmanager
 
                 case "Display":
                     DisplayInfoRef.Forward(message);
+                    timer.Enabled = true;
                     break;
+
                 case SendToWorkinNode:
                     Context.Parent.Forward(message);
                     break;

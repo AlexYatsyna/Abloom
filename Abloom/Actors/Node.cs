@@ -3,12 +3,6 @@ using Abloom.Actors.Processmanager;
 using Abloom.Messages;
 using Akka.Actor;
 using Akka.Routing;
-using Akka.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Abloom.Actors
 {
@@ -33,6 +27,7 @@ namespace Abloom.Actors
                 case "start":
                     ProcessmanagerRef.Tell("data");
                     break;
+
                 case SendToWorkinNode:
                     //var a = Context.ActorSelection("akka.tcp://msys@localhost:52597/user/process");
                     //Console.WriteLine(a);
