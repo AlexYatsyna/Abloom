@@ -19,7 +19,7 @@ namespace Abloom.Actors.Processmanager
             DisplayInfoRef = Context.ActorOf<DisplayProcessor>("display-processor");
             PasswordGeneratorRef = Context.ActorOf<PasswordGeneratorProcessor>("password-processor");
 
-            timer.Interval = 250;
+            timer.Interval = 10;
             timer.AutoReset = true;
             timer.Elapsed += RequestSendingPasswords;
         }
@@ -36,9 +36,12 @@ namespace Abloom.Actors.Processmanager
                     GetDataRef.Tell("Get data");
                     break;
 
-                case "Display":
-                    DisplayInfoRef.Forward(message);
+                case "StartSending":
                     timer.Enabled = true;
+                    break;
+
+                case "StopSending":
+                    timer.Enabled = false;
                     break;
 
                 case SendToWorkinNode:

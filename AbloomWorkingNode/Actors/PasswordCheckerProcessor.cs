@@ -4,29 +4,29 @@ using Akka.Actor;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AbloomWorkingNode.Actors
 {
     internal class PasswordCheckerProcessor : UntypedActor
     {
         private CustomPasswordHasher Hasher { get; set; } 
-        private bool isCompleted = false;
+        private int NumberOfTasks { get; set; }
+        private IActorRef SenderRef { get; set; }
         protected override void PreStart()
         {
             Hasher = new CustomPasswordHasher();
+            NumberOfTasks = 0;
         }
 
-        public string StartCheck(List<string> passwords, string hash)
+        public RespondPassword StartCheck(SendToWorkinNode message)
         {
-            foreach (var password in passwords)
+            foreach (var password in message.Passwords)
             {
-                if (isCompleted)
-                    break;
-                if (VerificatePassword(password, hash))
-                    return password;
-
+                if (VerificatePassword(password, message.Hash))
+                    return new RespondPassword(message.Id, true, message.Passwords.Count, password);
             }
-            return "";
+            return new RespondPassword(message.Id, true, message.Passwords.Count, "");
         }
 
         private bool VerificatePassword(string password, string hash)
@@ -38,24 +38,26 @@ namespace AbloomWorkingNode.Actors
             return false;
         }
 
-        private void ProcessMessage(SendToWorkinNode message)
-        {
-            var result = StartCheck(message.Passwords, message.Hash);
-            Console.WriteLine(result);
-            if (result.Length != 0)
-            {
-                Sender.Tell(new RespondPassword(message.Id, true, message.Passwords.Count, result));
-                return;
-            }
-            Sender.Tell(new RespondPassword(message.Id, true, message.Passwords.Count));
-        }
-
         protected override void OnReceive(object message)
         {
             switch (message)
             {
-                case SendToWorkinNode mess:
-                    ProcessMessage(mess);
+                case SendToWorkinNode messag:
+                    //var result = StartCheck(messag);
+                    //Sender.Tell();
+                    SenderRef = Sender;
+                    
+                    if (NumberOfTasks < 2)
+                    {
+                        NumberOfTasks++;
+                        Task.Run(() => StartCheck(messag)).PipeTo(Self);
+                    }
+                    else
+                        Self.Forward(messag);
+                    break;
+                case RespondPassword messag:
+                    NumberOfTasks--;
+                    SenderRef.Tell(messag);
                     break;
             }
         }

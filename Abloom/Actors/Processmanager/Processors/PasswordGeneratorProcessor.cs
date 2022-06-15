@@ -15,13 +15,19 @@ namespace Abloom.Actors.Processmanager.Processors
         const string PUNCTUATION = "!@#$%^&*()_+";
         List<string> partOfPasswords = new List<string>();
         private string Chars { get; set; } = ALPHABET.ToLower() + ALPHABET.ToUpper() + NUMBERS + PUNCTUATION;
-        //private Dictionary<Guid, List<string>> PasswordForWorkerNodes { get; set; } = new Dictionary<Guid, List<string>>();
         private Dictionary<Guid, List<string>> PreparedToSend { get; set; } = new Dictionary<Guid, List<string>>();
         private Dictionary<Guid, List<string>> SentPasswords { get; set; } = new Dictionary<Guid, List<string>>();
         private string Hash { get; set; }
+        private CancellationTokenSource TokenSource { get; set; }
+        private CancellationToken Token { get; set; }
         private bool isFound = false;
         private bool isExit = false;
 
+        protected override void PreStart()
+        {
+            TokenSource = new CancellationTokenSource();
+            Token = TokenSource.Token;
+        }
         public void StartCheck(int estimatedPasswordLength = 0)
         {
 
@@ -73,8 +79,6 @@ namespace Abloom.Actors.Processmanager.Processors
                 }
                 else
                 {
-                    //CurrentNumberOfComb++;
-
                     bool resultOfchecking;
                     if (passChars.Length >= 4)
                     {
@@ -103,9 +107,9 @@ namespace Abloom.Actors.Processmanager.Processors
 
                     var password = new string(passChars);
 
-                    if (partOfPasswords.Count > 25)
+                    if (partOfPasswords.Count >= 50)
                     {
-                        lock(this)
+                        lock (this)
                         {
                             var id = Guid.NewGuid();
                             //PasswordForWorkerNodes.Add(id, partOfPasswords.ToList());
@@ -113,10 +117,9 @@ namespace Abloom.Actors.Processmanager.Processors
                             //Context.Parent.Tell(new SendToWorkinNode(partOfPasswords.ToList(), Hash, id));
                             //ParentRef.Tell(new SendToWorkinNode(partOfPasswords.ToList(), Hash, id));
                             partOfPasswords.Clear();
-                        }            
+                        }
 
                     }
-                    // TODO: remake, because blocks the actor 
                     partOfPasswords.Add(password);
                     return;
 
@@ -138,17 +141,18 @@ namespace Abloom.Actors.Processmanager.Processors
 
         private void SendPasswords()
         {
-            lock(this)
+            lock (this)
             {
-                foreach (var item in PreparedToSend)
+                if (PreparedToSend.Count != 0)
                 {
-                    Context.Parent.Tell(new SendToWorkinNode(item.Value.ToList(), Hash, item.Key));
-                    SentPasswords.Add(item.Key, item.Value.ToList());
+                    Context.Parent.Tell(new SendToWorkinNode(PreparedToSend.First().Value, Hash, PreparedToSend.First().Key));
+                    SentPasswords.Add(PreparedToSend.First().Key, PreparedToSend.First().Value);
+                    PreparedToSend.Remove(PreparedToSend.First().Key);
                 }
-                PreparedToSend.Clear();
             }
-            
         }
+
+        
 
         protected override void OnReceive(object message)
         {
@@ -156,16 +160,22 @@ namespace Abloom.Actors.Processmanager.Processors
             {
                 case SendToGeneratePasswords data:
                     Hash = data.CorrectHash;
-                    Task.Run(() => StartCheck(data.EstimatedPassword));
+                    Task.Run(() => StartCheck(data.EstimatedPassword), Token);
                     break;
 
                 case RespondPassword data:
                     SentPasswords.Remove(data.Id);
                     var displayProcessor = Context.ActorSelection("../display-processor");
+
                     displayProcessor.Tell(new SetCurrentCombination(data.IntervalSize));
+
                     if (data.IsFound && data.Password != "")
+                    {
+                        TokenSource.Cancel();
+                        Context.Parent.Tell("StopSending");
                         displayProcessor.Tell(new RespondFinishExecution(data.Password, data.IsFound));
-                    //TODO : send this notification to workers
+                    }
+                    //TODO? : send this notification to workers
                     break;
 
                 case "Send":

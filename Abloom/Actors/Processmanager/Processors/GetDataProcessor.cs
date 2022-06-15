@@ -14,8 +14,9 @@ namespace Abloom.Actors.Processors
             {
                 case "Get data":
                     GetData();
-                    Context.ActorSelection("../display-processor").Tell(new SetInitialData(Hash, PassLength));
-                    Sender.Tell("Display");
+                    var displayProcessor = Context.ActorSelection("../display-processor");
+                    displayProcessor.Tell(new SetInitialData(Hash, PassLength));
+                    displayProcessor.Tell("Display");
                     break;
             }
         }
