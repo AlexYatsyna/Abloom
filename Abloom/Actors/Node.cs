@@ -3,6 +3,8 @@ using Abloom.Actors.Processmanager;
 using Abloom.Messages;
 using Akka.Actor;
 using Akka.Routing;
+using System;
+using System.Linq;
 
 namespace Abloom.Actors
 {
@@ -17,6 +19,23 @@ namespace Abloom.Actors
             ClusterManagerRef = Context.ActorOf<ClusterManager>("cluster-manager");
             ProcessmanagerRef = Context.ActorOf<ProcessManager>("process-manager");
             BalanceRouterRef = Context.ActorOf(Props.Empty.WithRouter(FromConfig.Instance), "balanceRouter");
+            //BalanceRouterRef.Tell(new AddRoutee(new Routee()))
+            //var routee = BalanceRouterRef.Ask<Routees>(new GetRoutees()).ContinueWith(tr =>{
+            //    if (tr.Result.Members.Count() > 0)
+            //    {
+            //        foreach(var member in tr.Result.Members)
+            //        {
+            //            Console.WriteLine(((ActorSelectionRoutee)member).Selection.PathString);
+            //            Console.WriteLine(((ActorSelectionRoutee)member).Selection.Anchor.Path);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        Console.WriteLine("no");
+            //    }
+            //});
+
+
 
         }
         protected override void OnReceive(object message)
@@ -29,22 +48,6 @@ namespace Abloom.Actors
                     break;
 
                 case SendToWorkinNode:
-                    //var a = Context.ActorSelection("akka.tcp://msys@localhost:52597/user/process");
-                    //Console.WriteLine(a);
-                    //a.Tell(mes);
-
-                    //var routee = BalanceRouterRef.Ask<Routees>(new GetRoutees()).ContinueWith(tr =>
-                    //{
-                    //    if (tr.Result.Members.Count() > 0)
-                    //    {
-                    //        Console.WriteLine(tr.Result.Members.Count());
-                    //    }
-                    //    else
-                    //    {
-                    //        Console.WriteLine("no");
-                    //    }
-                    //});
-
                     BalanceRouterRef.Forward(message);
                     break;
                     

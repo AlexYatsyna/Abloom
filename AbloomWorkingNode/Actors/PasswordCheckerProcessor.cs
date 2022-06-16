@@ -1,6 +1,7 @@
 ﻿using Abloom.Hashers;
 using Abloom.Messages;
 using Akka.Actor;
+using Akka.Util.Internal;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
@@ -11,12 +12,9 @@ namespace AbloomWorkingNode.Actors
     internal class PasswordCheckerProcessor : UntypedActor
     {
         private CustomPasswordHasher Hasher { get; set; } 
-        private int NumberOfTasks { get; set; }
-        private IActorRef SenderRef { get; set; }
         protected override void PreStart()
         {
             Hasher = new CustomPasswordHasher();
-            NumberOfTasks = 0;
         }
 
         public RespondPassword StartCheck(SendToWorkinNode message)
@@ -43,21 +41,9 @@ namespace AbloomWorkingNode.Actors
             switch (message)
             {
                 case SendToWorkinNode messag:
-                    //var result = StartCheck(messag);
-                    //Sender.Tell();
-                    SenderRef = Sender;
-                    
-                    if (NumberOfTasks < 2)
-                    {
-                        NumberOfTasks++;
-                        Task.Run(() => StartCheck(messag)).PipeTo(Self);
-                    }
-                    else
-                        Self.Forward(messag);
-                    break;
-                case RespondPassword messag:
-                    NumberOfTasks--;
-                    SenderRef.Tell(messag);
+                    var result = StartCheck(messag);
+                    Sender.Tell(result);
+                    Console.WriteLine(Context.AsInstanceOf<ActorCell>().Mailbox.MessageQueue.Count);
                     break;
             }
         }
