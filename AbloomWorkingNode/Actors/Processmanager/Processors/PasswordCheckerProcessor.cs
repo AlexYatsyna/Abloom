@@ -25,7 +25,7 @@ namespace AbloomWorkingNode.Actors.Processmanager.Processors
                 if (VerificatePassword(password, message.Hash))
                     return new RespondPassword(message.Id, true, message.Passwords.Count, password);
             }
-            return new RespondPassword(message.Id, true, message.Passwords.Count, "");
+            return new RespondPassword(message.Id, false, message.Passwords.Count, "");
         }
 
         private bool VerificatePassword(string password, string hash)
@@ -41,11 +41,11 @@ namespace AbloomWorkingNode.Actors.Processmanager.Processors
         {
             switch (message)
             {
-                //case SendToWorkinNode messag:
-                //    var result = StartCheck(messag);
-                //    Sender.Tell(result);
-                //    Console.WriteLine(Context.AsInstanceOf<ActorCell>().Mailbox.MessageQueue.Count);
-                //    break;
+                case SendToWorkinNode data:
+                    var result = StartCheck(data);
+                    data.ReplyTo.Tell(result);
+                    Context.Parent.Tell("Ready for checking");
+                    break;
             }
         }
     }

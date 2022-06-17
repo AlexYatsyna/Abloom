@@ -42,6 +42,10 @@ namespace AbloomWorkingNode.Actors
                 case RemovePathRoutee:
                     RouterManagerRef.Forward(message);
                     break;
+
+                case SendToWorkinNode:
+                    ProcessmanagerRef.Forward(message);
+                    break;
             }
         }
     }

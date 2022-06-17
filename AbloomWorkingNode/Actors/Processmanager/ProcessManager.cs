@@ -24,6 +24,10 @@ namespace AbloomWorkingNode.Actors.Processmanager
                 case "Ready for checking":
                     Context.Parent.Forward(message);
                     break;
+
+                case SendToWorkinNode:
+                    PasswordCheckerRef.Forward(message);
+                    break;
             }
 
         }

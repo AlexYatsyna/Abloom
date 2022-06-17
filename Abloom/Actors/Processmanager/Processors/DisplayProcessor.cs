@@ -22,8 +22,8 @@ namespace Abloom.Actors.Processors
                 case SetInitialData data:
                     NumberOfPassCombinations = data.NumberOfPassCombinations;
                     PasswordLength = data.PasswordLength;
-                    //Context.ActorSelection("../password-processor").Tell(new SendToGeneratePasswords(data.Hash, data.PasswordLength));
-                    //Context.Parent.Tell("StartSending");
+
+                    Context.ActorSelection("../password-processor").Tell(data);
                     break;
 
                 case SetCurrentCombination current:

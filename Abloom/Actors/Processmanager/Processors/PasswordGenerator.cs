@@ -101,9 +101,10 @@ namespace Abloom.Actors.Processmanager.Processors
                     NumberOfCombinations = data.NumberOfPassCombinations;
                     PasswordLength = data.PasswordLength;
                     break;
+
                 case GetPasswordsIntervals data:
                     var result = GetPasswordIntervals(data.NumberOfIntervals, data.NumebrOfPasswordsInTheInterval);
-                    Sender.Tell(result);
+                    Sender.Tell(new RespondPasswordIntervals(result));
                     break;
             }
         }

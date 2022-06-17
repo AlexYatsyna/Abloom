@@ -2,6 +2,7 @@
 using Akka.Actor;
 using Akka.Util.Internal;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -12,7 +13,7 @@ namespace Abloom.Actors.Processmanager.Processors
     public class SendRecievePassProcessor : UntypedActor
     {
         private IActorRef PasswordgeneratorRef { get; set; }
-        private Dictionary<Guid, List<string>> PreparedToSend { get; set; } = new Dictionary<Guid, List<string>>();
+        private ConcurrentDictionary<Guid, List<string>> PreparedToSend { get; set; } = new ConcurrentDictionary<Guid, List<string>>();
         private Dictionary<Guid, List<string>> SentPasswords { get; set; } = new Dictionary<Guid, List<string>>();
         private string Hash { get; set; }
 
@@ -27,12 +28,48 @@ namespace Abloom.Actors.Processmanager.Processors
             switch (message)
             {
                 case "Ready for checking":
-                    //TODO : Get data and send to worker
+                    
+                    if(PreparedToSend.Count == 0 || Hash == null)
+                    {
+                        PasswordgeneratorRef.Tell(new GetPasswordsIntervals(10, 25));
+                        Self.Forward(message);
+                    }
+                    else
+                    {
+                        var id = PreparedToSend.First().Key;
+                        var passwords = PreparedToSend.First().Value;
+                        PreparedToSend.TryRemove(new KeyValuePair<Guid, List<string>>(id, passwords));
+                        SentPasswords.Add(id, passwords);
+                        Sender.Tell(new SendToWorkinNode(passwords, Hash, id, Self));
+                    }
                     break;
-                //case SendToGeneratePasswords data:
-                //    Hash = data.CorrectHash;
-                //    Task.Run(() => StartCheck(data.EstimatedPassword), Token);
-                //    break;
+
+                case RespondPasswordIntervals data:
+                    Task.Run(() =>
+                    {
+                        foreach (var item in data.Intervals)
+                        {
+                            PreparedToSend.GetOrAdd(Guid.NewGuid(), item);
+                        }
+
+                    });
+                    break;
+
+                case RespondPassword data:
+                    SentPasswords.Remove(data.Id);
+
+                    var displayProcessor = Context.ActorSelection("../display-processor");
+                    displayProcessor.Tell(new SetCurrentCombination(data.IntervalSize));
+
+                    if (data.IsFound && data.Password != "")
+                        displayProcessor.Tell(new RespondFinishExecution(data.Password, data.IsFound));
+
+                    break;
+
+                case SetInitialData data:
+                    Hash = data.Hash;
+                    PasswordgeneratorRef.Tell(data);
+                    break;
 
                 //case RespondPassword data:
                 //    SentPasswords.Remove(data.Id);
