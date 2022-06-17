@@ -11,21 +11,24 @@ namespace Abloom.Actors.Processmanager.Processors
 {
     public class SendRecievePassProcessor : UntypedActor
     {
-        const string NUMBERS = "0123456789";
-        const string ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        const string PUNCTUATION = "!@#$%^&*()_+";
-        private string Chars { get; set; } = ALPHABET.ToLower() + ALPHABET.ToUpper() + NUMBERS + PUNCTUATION;
+        private IActorRef PasswordgeneratorRef { get; set; }
         private Dictionary<Guid, List<string>> PreparedToSend { get; set; } = new Dictionary<Guid, List<string>>();
         private Dictionary<Guid, List<string>> SentPasswords { get; set; } = new Dictionary<Guid, List<string>>();
         private string Hash { get; set; }
 
 
-       
+        protected override void PreStart()
+        {
+            PasswordgeneratorRef = Context.ActorOf<PasswordGenerator>("password-generator");
+        }
 
         protected override void OnReceive(object message)
         {
             switch (message)
             {
+                case "Ready for checking":
+                    //TODO : Get data and send to worker
+                    break;
                 //case SendToGeneratePasswords data:
                 //    Hash = data.CorrectHash;
                 //    Task.Run(() => StartCheck(data.EstimatedPassword), Token);

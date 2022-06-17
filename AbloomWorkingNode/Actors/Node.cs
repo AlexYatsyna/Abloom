@@ -1,24 +1,24 @@
-﻿using Abloom.Actors.ClusterManger;
-using Abloom.Actors.Processmanager;
-using Abloom.Messages;
+﻿using Abloom.Messages;
+using AbloomWorkingNode.Actors.Processmanager;
 using Akka.Actor;
 using Akka.Routing;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Abloom.Actors
+namespace AbloomWorkingNode.Actors
 {
     internal class Node : UntypedActor
     {
-        private IActorRef ClusterManagerRef { get; set; }
         private IActorRef ProcessmanagerRef { get; set; }
-        private IActorRef BalanceRouterRef { get; set; }
+        private IActorRef RouterRef { get; set; }
 
         protected override void PreStart()
         {
-            ClusterManagerRef = Context.ActorOf<ClusterManager>("cluster-manager");
             ProcessmanagerRef = Context.ActorOf<ProcessManager>("process-manager");
-            //BalanceRouterRef = Context.ActorOf(Props.Empty.WithRouter(FromConfig.Instance), "balanceRouter");
+            RouterRef = Context.ActorOf(Props.Empty.WithRouter(FromConfig.Instance), "task-router");
             //BalanceRouterRef.Tell(new AddRoutee(new Routee()))
             //var routee = BalanceRouterRef.Ask<Routees>(new GetRoutees()).ContinueWith(tr =>{
             //    if (tr.Result.Members.Count() > 0)
@@ -34,28 +34,19 @@ namespace Abloom.Actors
             //        Console.WriteLine("no");
             //    }
             //});
-
-
-
         }
+
         protected override void OnReceive(object message)
         {
 
             switch (message)
             {
-                case "start":
-                    ProcessmanagerRef.Tell("data");
-                    break;
-
                 case SendToWorkinNode:
-                    BalanceRouterRef.Forward(message);
-                    break;
-
-                case "Ready for checking":
                     ProcessmanagerRef.Forward(message);
                     break;
-
-
+                case "Ready for checking":
+                    RouterRef.Forward(message);
+                    break;
 
             }
         }

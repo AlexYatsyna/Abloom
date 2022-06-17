@@ -7,14 +7,15 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace AbloomWorkingNode.Actors
+namespace AbloomWorkingNode.Actors.Processmanager.Processors
 {
     internal class PasswordCheckerProcessor : UntypedActor
     {
-        private CustomPasswordHasher Hasher { get; set; } 
+        private CustomPasswordHasher Hasher { get; set; }
         protected override void PreStart()
         {
             Hasher = new CustomPasswordHasher();
+            Context.Parent.Tell("Ready for checking");
         }
 
         public RespondPassword StartCheck(SendToWorkinNode message)

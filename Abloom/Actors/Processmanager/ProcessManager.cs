@@ -9,13 +9,13 @@ namespace Abloom.Actors.Processmanager
     {
         private IActorRef GetDataRef { get; set; }
         private IActorRef DisplayInfoRef { get; set; }
-        private IActorRef PasswordGeneratorRef { get; set; }
+        private IActorRef SendRecievePassRef { get; set; }
 
         protected override void PreStart()
         {
             GetDataRef = Context.ActorOf<GetDataProcessor>("get-data-processor");
             DisplayInfoRef = Context.ActorOf<DisplayProcessor>("display-processor");
-            PasswordGeneratorRef = Context.ActorOf<SendRecievePassProcessor>("password-processor");
+            SendRecievePassRef = Context.ActorOf<SendRecievePassProcessor>("password-processor");
         }
 
         protected override void OnReceive(object message)
@@ -28,6 +28,9 @@ namespace Abloom.Actors.Processmanager
 
                 case SendToWorkinNode:
                     Context.Parent.Forward(message);
+                    break;
+                case "Ready for checking":
+                    SendRecievePassRef.Forward(message);
                     break;
             }
         }
