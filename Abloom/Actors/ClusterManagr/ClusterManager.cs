@@ -1,7 +1,8 @@
-﻿using Akka.Actor;
+﻿using Abloom.Messages;
+using Akka.Actor;
 
 
-namespace Abloom.Actors.ClusterManger
+namespace Abloom.Actors.ClusterMangr
 {
     internal class ClusterManager : UntypedActor
     {
@@ -15,7 +16,13 @@ namespace Abloom.Actors.ClusterManger
         {
             switch (message)
             {
+                case SetPathRoutee:
+                    Context.Parent.Forward(message);
+                    break;
 
+                case RemovePathRoutee:
+                    Context.Parent.Forward(message);
+                    break;
             }
         }
     }

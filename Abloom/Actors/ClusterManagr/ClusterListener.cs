@@ -1,9 +1,12 @@
-﻿using Akka.Actor;
+﻿using Abloom.Messages;
+using Akka.Actor;
 using Akka.Cluster;
 using Akka.Event;
+using Akka.Routing;
 using System;
+using System.Threading.Tasks;
 
-namespace Abloom.Actors.ClusterManger
+namespace Abloom.Actors.ClusterMangr
 {
     internal class ClusterListener : UntypedActor
     {
@@ -19,24 +22,39 @@ namespace Abloom.Actors.ClusterManger
             cluster.Unsubscribe(Self);
         }
 
+
         protected override void OnReceive(object message)
         {
             switch (message)
             {
                 case ClusterEvent.MemberUp member:
                     //Log.Info("\n\nMember is up: {0}\n\n", member.Member);
-                    if (member.Member.Roles.Contains("working-node"))
+                    if (member.Member.HasRole("working-node"))
+                    {
+                        var path = member.Member.Address + "/user/node";
+                        var actorRef = Context.ActorSelection(path).ResolveOne(TimeSpan.FromSeconds(2)).Result;
+                        var actorRoutee = Routee.FromActorRef(actorRef);
+                        Context.Parent.Tell(new SetPathRoutee(actorRoutee, path));
+
                         Console.WriteLine("Member is up: {0}\n", member.Member);
+                    }
                     break;
+
                 case ClusterEvent.UnreachableMember member:
                     //Log.Info("\n\nMember is unreachable: {0}\n\n", member.Member);
-                    if (member.Member.Roles.Contains("working-node"))
+                    if (member.Member.HasRole("working-node"))
                         Console.WriteLine("Member is unreachable: {0}\n", member.Member);
                     break;
+
                 case ClusterEvent.MemberRemoved member:
                     //Log.Info("\n\nMember is removed: {0}\n\n", member.Member);
-                    if (member.Member.Roles.Contains("working-node"))
+                    if (member.Member.HasRole("working-node"))
+                    {
+                        var path = member.Member.Address + "/user/node";
+                        Context.Parent.Tell(new RemovePathRoutee(path));
+
                         Console.WriteLine("Member is removed: {0}\n", member.Member);
+                    }
                     break;
             }
         }

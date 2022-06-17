@@ -1,10 +1,13 @@
-﻿using Abloom.Actors.ClusterManger;
+﻿using Abloom.Actors.ClusterMangr;
 using Abloom.Actors.Processmanager;
+using Abloom.Actors.RouterManager;
 using Abloom.Messages;
 using Akka.Actor;
 using Akka.Routing;
 using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Abloom.Actors
 {
@@ -12,31 +15,13 @@ namespace Abloom.Actors
     {
         private IActorRef ClusterManagerRef { get; set; }
         private IActorRef ProcessmanagerRef { get; set; }
-        private IActorRef BalanceRouterRef { get; set; }
+        private IActorRef RouterManagerRef { get; set; }
 
         protected override void PreStart()
         {
             ClusterManagerRef = Context.ActorOf<ClusterManager>("cluster-manager");
             ProcessmanagerRef = Context.ActorOf<ProcessManager>("process-manager");
-            //BalanceRouterRef = Context.ActorOf(Props.Empty.WithRouter(FromConfig.Instance), "balanceRouter");
-            //BalanceRouterRef.Tell(new AddRoutee(new Routee()))
-            //var routee = BalanceRouterRef.Ask<Routees>(new GetRoutees()).ContinueWith(tr =>{
-            //    if (tr.Result.Members.Count() > 0)
-            //    {
-            //        foreach(var member in tr.Result.Members)
-            //        {
-            //            Console.WriteLine(((ActorSelectionRoutee)member).Selection.PathString);
-            //            Console.WriteLine(((ActorSelectionRoutee)member).Selection.Anchor.Path);
-            //        }
-            //    }
-            //    else
-            //    {
-            //        Console.WriteLine("no");
-            //    }
-            //});
-
-
-
+            RouterManagerRef = Context.ActorOf<CustomRouterManager>("router-manager");
         }
         protected override void OnReceive(object message)
         {
@@ -47,16 +32,17 @@ namespace Abloom.Actors
                     ProcessmanagerRef.Tell("data");
                     break;
 
-                case SendToWorkinNode:
-                    BalanceRouterRef.Forward(message);
-                    break;
-
                 case "Ready for checking":
                     ProcessmanagerRef.Forward(message);
                     break;
 
+                case SetPathRoutee:
+                    RouterManagerRef.Forward(message);
+                    break;
 
-
+                case RemovePathRoutee:
+                    RouterManagerRef.Forward(message);
+                    break;
             }
         }
     }

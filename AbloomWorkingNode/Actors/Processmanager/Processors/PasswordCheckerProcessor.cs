@@ -41,11 +41,11 @@ namespace AbloomWorkingNode.Actors.Processmanager.Processors
         {
             switch (message)
             {
-                case SendToWorkinNode messag:
-                    var result = StartCheck(messag);
-                    Sender.Tell(result);
-                    Console.WriteLine(Context.AsInstanceOf<ActorCell>().Mailbox.MessageQueue.Count);
-                    break;
+                //case SendToWorkinNode messag:
+                //    var result = StartCheck(messag);
+                //    Sender.Tell(result);
+                //    Console.WriteLine(Context.AsInstanceOf<ActorCell>().Mailbox.MessageQueue.Count);
+                //    break;
             }
         }
     }
