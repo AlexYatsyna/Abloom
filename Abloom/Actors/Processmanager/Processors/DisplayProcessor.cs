@@ -2,6 +2,7 @@
 using Akka.Actor;
 using System;
 using System.Numerics;
+using System.Threading.Tasks;
 using System.Timers;
 
 namespace Abloom.Actors.Processors
@@ -34,6 +35,8 @@ namespace Abloom.Actors.Processors
                     timer.Elapsed += DisplayInfo;
                     timer.AutoReset = true;
                     timer.Enabled = true;
+
+                    Task.Run(() => GetHotkeysFromUser()).PipeTo(Context.Parent);
                     break;
 
                 case RespondFinishExecution finished:
@@ -55,13 +58,14 @@ namespace Abloom.Actors.Processors
 
             Console.WriteLine("\n\t\t\tPress 'x' to exit");
             Console.WriteLine($"\n\n{percent} % , {CurrentNumberOfComb:N0} / {NumberOfPassCombinations:N0} combinations for for password length {PasswordLength} \n\n");
-            GetHotkeysFromUser();
         }
 
-        private void GetHotkeysFromUser()
+        private string GetHotkeysFromUser()
         {
             var exit = Console.ReadKey();
-            // CommonData.isExit = exit.KeyChar == 'x';
+            if (exit.KeyChar == 'x')
+                return "End";
+            return "";
         }
     }
 }

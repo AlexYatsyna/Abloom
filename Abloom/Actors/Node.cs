@@ -34,6 +34,7 @@ namespace Abloom.Actors
 
                 case "End":
                     Context.Stop(Self);
+                    Context.System.Terminate();
                     break;
 
                 case ReadyForChecking:
