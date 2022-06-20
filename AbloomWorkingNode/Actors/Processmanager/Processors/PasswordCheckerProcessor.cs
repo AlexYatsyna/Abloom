@@ -15,7 +15,6 @@ namespace AbloomWorkingNode.Actors.Processmanager.Processors
         protected override void PreStart()
         {
             Hasher = new CustomPasswordHasher();
-            Context.Parent.Tell("Ready for checking");
         }
 
         public RespondPassword StartCheck(SendToWorkinNode message)

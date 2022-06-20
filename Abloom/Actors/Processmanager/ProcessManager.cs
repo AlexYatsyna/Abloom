@@ -30,7 +30,7 @@ namespace Abloom.Actors.Processmanager
                     Context.Parent.Forward(message);
                     break;
 
-                case "Ready for checking":
+                case ReadyForChecking:
                     SendRecievePassRef.Forward(message);
                     break;
             }

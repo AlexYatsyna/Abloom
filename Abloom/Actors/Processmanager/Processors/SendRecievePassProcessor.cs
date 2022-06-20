@@ -27,9 +27,9 @@ namespace Abloom.Actors.Processmanager.Processors
         {
             switch (message)
             {
-                case "Ready for checking":
+                case ReadyForChecking data:
                     
-                    if(PreparedToSend.Count == 0 || Hash == null)
+                    if(PreparedToSend.IsEmpty || Hash == null)
                     {
                         PasswordgeneratorRef.Tell(new GetPasswordsIntervals(10, 25));
                         Self.Forward(message);
@@ -40,7 +40,7 @@ namespace Abloom.Actors.Processmanager.Processors
                         var passwords = PreparedToSend.First().Value;
                         PreparedToSend.TryRemove(new KeyValuePair<Guid, List<string>>(id, passwords));
                         SentPasswords.Add(id, passwords);
-                        Sender.Tell(new SendToWorkinNode(passwords, Hash, id, Self));
+                        data.ReplyTo.Tell(new SendToWorkinNode(passwords, Hash, id, Self));
                     }
                     break;
 

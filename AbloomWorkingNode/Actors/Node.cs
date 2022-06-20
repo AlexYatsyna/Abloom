@@ -32,7 +32,7 @@ namespace AbloomWorkingNode.Actors
             switch (message)
             {
                 case "Ready for checking":
-                    RouterManagerRef.Forward(message);
+                    RouterManagerRef.Tell(new ReadyForChecking(Self));
                     break;
 
                 case SetPathRoutee:
