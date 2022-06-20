@@ -1,4 +1,5 @@
 ﻿using Abloom.Messages;
+using Abloom.Models;
 using Akka.Actor;
 using Akka.Util.Internal;
 using System;
@@ -14,8 +15,9 @@ namespace Abloom.Actors.Processmanager.Processors
     {
         private IActorRef PasswordgeneratorRef { get; set; }
         private ConcurrentDictionary<Guid, List<string>> PreparedToSend { get; set; } = new ConcurrentDictionary<Guid, List<string>>();
-        private Dictionary<Guid, List<string>> SentPasswords { get; set; } = new Dictionary<Guid, List<string>>();
+        private Dictionary<Guid, SentPassword> SentPasswords { get; set; } = new Dictionary<Guid,SentPassword>();
         private string Hash { get; set; }
+        private bool isRequested = false;
 
 
         protected override void PreStart()
@@ -28,20 +30,47 @@ namespace Abloom.Actors.Processmanager.Processors
             switch (message)
             {
                 case ReadyForChecking data:
-                    
-                    if(PreparedToSend.IsEmpty || Hash == null)
+
+                    if (!PreparedToSend.IsEmpty)
                     {
-                        PasswordgeneratorRef.Tell(new GetPasswordsIntervals(10, 25));
-                        Self.Forward(message);
-                    }
-                    else
-                    {
+                        foreach (var item in SentPasswords)
+                        {
+                            if (item.Value.ExpectedResponseTime < DateTime.Now)
+                            {
+                                SentPasswords.AddOrSet(item.Key, new SentPassword(DateTime.Now, DateTime.Now + TimeSpan.FromMilliseconds(5500), item.Value.Passwords));
+                                SentPasswords.TryGetValue(item.Key, out SentPassword sentPassword);
+
+                                if (sentPassword != null)
+                                    data.ReplyTo.Tell(new SendToWorkinNode(sentPassword.Passwords, Hash, item.Key, Self));
+                                return;
+                            }
+
+                        }
+
                         var id = PreparedToSend.First().Key;
                         var passwords = PreparedToSend.First().Value;
+
                         PreparedToSend.TryRemove(new KeyValuePair<Guid, List<string>>(id, passwords));
-                        SentPasswords.Add(id, passwords);
+                        SentPasswords.Add(id, new SentPassword(DateTime.Now, DateTime.Now + TimeSpan.FromMilliseconds(5500), passwords));
+
                         data.ReplyTo.Tell(new SendToWorkinNode(passwords, Hash, id, Self));
+
+                        if (PreparedToSend.IsEmpty)
+                        {
+                            PasswordgeneratorRef.Tell(new GetPasswordsIntervals(10, 25));
+                            isRequested = true;
+                        }
+
+                        break;
                     }
+
+                    if (PreparedToSend.IsEmpty && !isRequested)
+                    {
+                        PasswordgeneratorRef.Tell(new GetPasswordsIntervals(10, 25));
+                        isRequested = true;
+                    }
+
+                    Self.Forward(message);
                     break;
 
                 case RespondPasswordIntervals data:
@@ -51,41 +80,25 @@ namespace Abloom.Actors.Processmanager.Processors
                         {
                             PreparedToSend.GetOrAdd(Guid.NewGuid(), item);
                         }
-
+                        isRequested = false;
                     });
                     break;
 
                 case RespondPassword data:
-                    SentPasswords.Remove(data.Id);
+                    if (SentPasswords.Remove(data.Id))
+                    {
+                        var displayProcessor = Context.ActorSelection("../display-processor");
+                        displayProcessor.Tell(new SetCurrentCombination(data.IntervalSize));
 
-                    var displayProcessor = Context.ActorSelection("../display-processor");
-                    displayProcessor.Tell(new SetCurrentCombination(data.IntervalSize));
-
-                    if (data.IsFound && data.Password != "")
-                        displayProcessor.Tell(new RespondFinishExecution(data.Password, data.IsFound));
-
+                        if (data.IsFound && data.Password != "")
+                            displayProcessor.Tell(new RespondFinishExecution(data.Password, data.IsFound));
+                    }
                     break;
 
                 case SetInitialData data:
                     Hash = data.Hash;
                     PasswordgeneratorRef.Tell(data);
                     break;
-
-                //case RespondPassword data:
-                //    SentPasswords.Remove(data.Id);
-                //    Console.WriteLine(Context.AsInstanceOf<ActorCell>().Mailbox.MessageQueue.Count);
-                //    var displayProcessor = Context.ActorSelection("../display-processor");
-
-                //    displayProcessor.Tell(new SetCurrentCombination(data.IntervalSize));
-
-                //    if (data.IsFound && data.Password != "")
-                //    {
-                //        TokenSource.Cancel();
-                //        Context.Parent.Tell("StopSending");
-                //        displayProcessor.Tell(new RespondFinishExecution(data.Password, data.IsFound));
-                //    }
-                //    //TODO? : send this notification to workers
-                //    break;
             }
         }
     }

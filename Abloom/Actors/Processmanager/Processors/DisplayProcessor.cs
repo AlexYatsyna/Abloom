@@ -22,8 +22,6 @@ namespace Abloom.Actors.Processors
                 case SetInitialData data:
                     NumberOfPassCombinations = data.NumberOfPassCombinations;
                     PasswordLength = data.PasswordLength;
-
-                    Context.ActorSelection("../password-processor").Tell(data);
                     break;
 
                 case SetCurrentCombination current:
@@ -40,8 +38,9 @@ namespace Abloom.Actors.Processors
 
                 case RespondFinishExecution finished:
                     timer.Enabled = false;
-                    if(finished.Password != "")
-                        Console.WriteLine($" Password:  {finished.Password} \n Combination number: {CurrentNumberOfComb}");
+                    Console.WriteLine($" Password:  {finished.Password} \n Combination number: {CurrentNumberOfComb}");
+
+                    Context.Parent.Tell("End");
                     break;
 
             }

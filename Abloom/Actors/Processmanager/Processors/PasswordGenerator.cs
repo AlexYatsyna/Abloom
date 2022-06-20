@@ -13,9 +13,9 @@ namespace Abloom.Actors.Processmanager.Processors
         const string ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         const string PUNCTUATION = "!@#$%^&*()_+";
         private string Chars { get; set; } = ALPHABET.ToLower() + ALPHABET.ToUpper() + NUMBERS + PUNCTUATION;
-        private BigInteger NumberOfCombinations { get; set; } = BigInteger.Pow(74, 13);
-        private BigInteger LastCombination { get; set; } = 0;
-        private int PasswordLength { get; set; } = 13;
+        private BigInteger NumberOfCombinations { get; set; } = 0;
+        private BigInteger LastCombination { get; set; }
+        private int PasswordLength { get; set; } = 0;
 
         private List<List<string>> GetPasswordIntervals(int numberOfIntervals, int numberOfPasswordsInInterval)
         {
@@ -103,8 +103,13 @@ namespace Abloom.Actors.Processmanager.Processors
                     break;
 
                 case GetPasswordsIntervals data:
-                    var result = GetPasswordIntervals(data.NumberOfIntervals, data.NumebrOfPasswordsInTheInterval);
-                    Sender.Tell(new RespondPasswordIntervals(result));
+                    if (PasswordLength != 0 && NumberOfCombinations != 0)
+                    {
+                        var result = GetPasswordIntervals(data.NumberOfIntervals, data.NumebrOfPasswordsInTheInterval);
+                        Sender.Tell(new RespondPasswordIntervals(result));
+                    }
+                    else
+                        Self.Forward(data);
                     break;
             }
         }

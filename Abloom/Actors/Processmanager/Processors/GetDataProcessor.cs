@@ -14,9 +14,14 @@ namespace Abloom.Actors.Processors
             {
                 case "Get data":
                     GetData();
+
                     var displayProcessor = Context.ActorSelection("../display-processor");
+                    var sendRecieveProcessor = Context.ActorSelection("../password-processor");
+
                     displayProcessor.Tell(new SetInitialData(Hash, PassLength));
+                    sendRecieveProcessor.Tell(new SetInitialData(Hash, PassLength));
                     displayProcessor.Tell("Display");
+
                     break;
             }
         }

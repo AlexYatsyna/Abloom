@@ -25,13 +25,20 @@ namespace AbloomWorkingNode.Actors.RouterManager
                 case SetPathRoutee data:
                     RouteeStorage.Add(data.Path, data.ActorRoutee);
                     RouterRef.Tell(new AddRoutee(data.ActorRoutee));
+
                     if (RouteeStorage.Count == 1)
+                    {
+                        Thread.Sleep(100);
                         Context.Parent.Tell("Ready for checking");
+                    }
                     break;
 
                 case RemovePathRoutee data:
-                    RouterRef.Tell(new RemoveRoutee(RouteeStorage[data.Path]));
-                    RouteeStorage.Remove(data.Path);
+                    if (RouteeStorage.ContainsKey(data.Path))
+                    {
+                        RouterRef.Tell(new RemoveRoutee(RouteeStorage[data.Path]));
+                        RouteeStorage.Remove(data.Path);
+                    }
                     break;
 
                 case ReadyForChecking:

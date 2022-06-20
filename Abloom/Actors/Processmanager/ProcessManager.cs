@@ -26,12 +26,12 @@ namespace Abloom.Actors.Processmanager
                     GetDataRef.Tell("Get data");
                     break;
 
-                case SendToWorkinNode:
-                    Context.Parent.Forward(message);
-                    break;
-
                 case ReadyForChecking:
                     SendRecievePassRef.Forward(message);
+                    break;
+
+                case "End":
+                    Context.Parent.Forward(message);
                     break;
             }
         }
