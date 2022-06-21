@@ -40,10 +40,6 @@ namespace AbloomWorkingNode.Actors.RouterManager
                         RouteeStorage.Remove(data.Path);
                     }
                     break;
-
-                case ReadyForChecking:
-                    RouterRef.Forward(message);
-                    break;
             }
 
         }

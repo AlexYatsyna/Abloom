@@ -1,4 +1,4 @@
-﻿using Abloom.Hashers;
+﻿using AbloomWorkingNode.Hashers;
 using Abloom.Messages;
 using Akka.Actor;
 using Akka.Util.Internal;

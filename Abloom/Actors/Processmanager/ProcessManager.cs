@@ -22,10 +22,6 @@ namespace Abloom.Actors.Processmanager
         {
             switch (message)
             {
-                case "data":
-                    GetDataRef.Tell("Get data");
-                    break;
-
                 case ReadyForChecking:
                     SendRecievePassRef.Forward(message);
                     break;
