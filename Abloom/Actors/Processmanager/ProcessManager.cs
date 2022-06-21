@@ -15,7 +15,7 @@ namespace Abloom.Actors.Processmanager
         {
             GetDataRef = Context.ActorOf<GetDataProcessor>("get-data-processor");
             DisplayInfoRef = Context.ActorOf<DisplayProcessor>("display-processor");
-            SendRecievePassRef = Context.ActorOf<SendRecievePassProcessor>("password-processor");
+            SendRecievePassRef = Context.ActorOf<SendReceivePassProcessor>("password-processor");
         }
 
         protected override void OnReceive(object message)

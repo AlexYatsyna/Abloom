@@ -1,5 +1,4 @@
 ﻿using Abloom.Actors;
-using Abloom.Hashers;
 using Akka.Actor;
 using Akka.Configuration;
 using System.IO;

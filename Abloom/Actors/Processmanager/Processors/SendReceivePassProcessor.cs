@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Abloom.Actors.Processmanager.Processors
 {
-    public class SendRecievePassProcessor : UntypedActor
+    public class SendReceivePassProcessor : UntypedActor
     {
         private IActorRef PasswordgeneratorRef { get; set; }
         private ConcurrentDictionary<Guid, List<string>> PreparedToSend { get; set; } = new ConcurrentDictionary<Guid, List<string>>();
