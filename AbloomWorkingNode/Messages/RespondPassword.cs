@@ -2,9 +2,10 @@
 using System.Numerics;
 
 
-namespace Abloom.Messages
+namespace AbloomWorkingNode.Messages
 {
-    public class RespondPassword
+
+    public class RespondPassword : IAppProtocol
     {
         public Guid Id { get; }
         public string Password { get; }

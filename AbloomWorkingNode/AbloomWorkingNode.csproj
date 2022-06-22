@@ -14,8 +14,4 @@
     <PackageReference Include="Microsoft.AspNet.Identity.Core" Version="2.2.3" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Abloom\Abloom.csproj" />
-  </ItemGroup>
-
 </Project>

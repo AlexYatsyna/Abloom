@@ -1,15 +1,8 @@
 ﻿using AbloomWorkingNode.Actors.RouterManager;
-using Abloom.Messages;
 using AbloomWorkingNode.Actors.Processmanager;
 using AbloomWorkingNode.Actors.ClusterManagr;
 using Akka.Actor;
-using Akka.Routing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using AbloomWorkingNode.Messages;
 
 namespace AbloomWorkingNode.Actors
 {
@@ -32,7 +25,7 @@ namespace AbloomWorkingNode.Actors
             switch (message)
             {
                 case "Ready for checking":
-                    Context.ActorSelection("*/task-router").Tell(new ReadyForChecking(Self));
+                    Context.ActorSelection("*/task-router").Tell(message);
                     break;
 
                 case SetPathRoutee:

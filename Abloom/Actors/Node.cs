@@ -37,7 +37,7 @@ namespace Abloom.Actors
                     Context.System.Terminate();
                     break;
 
-                case ReadyForChecking:
+                case "Ready for checking":
                     ProcessmanagerRef.Forward(message);
                     break;
 

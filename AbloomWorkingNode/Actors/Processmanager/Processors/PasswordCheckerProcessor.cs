@@ -1,11 +1,7 @@
 ﻿using AbloomWorkingNode.Hashers;
-using Abloom.Messages;
 using Akka.Actor;
-using Akka.Util.Internal;
 using Microsoft.AspNet.Identity;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using AbloomWorkingNode.Messages;
 
 namespace AbloomWorkingNode.Actors.Processmanager.Processors
 {
@@ -42,7 +38,8 @@ namespace AbloomWorkingNode.Actors.Processmanager.Processors
             {
                 case SendToWorkinNode data:
                     var result = StartCheck(data);
-                    data.ReplyTo.Tell(result);
+                    var respondPath = Sender.Path.Address + "/user/node/process-manager/password-processor";
+                    Context.ActorSelection(respondPath).Tell(result);
                     Context.Parent.Tell("Ready for checking");
                     break;
             }

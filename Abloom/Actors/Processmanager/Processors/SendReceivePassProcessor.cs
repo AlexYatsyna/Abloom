@@ -1,5 +1,6 @@
 ﻿using Abloom.Messages;
 using Abloom.Models;
+using AbloomWorkingNode.Messages;
 using Akka.Actor;
 using Akka.Util.Internal;
 using System;
@@ -29,10 +30,11 @@ namespace Abloom.Actors.Processmanager.Processors
         {
             switch (message)
             {
-                case ReadyForChecking data:
+                case "Ready for checking":
 
-                    if (!PreparedToSend.IsEmpty)
+                    if (!PreparedToSend.IsEmpty && Hash != null)
                     {
+                        var respondPath = Sender.Path.Address + "/user/node";
                         foreach (var item in SentPasswords)
                         {
                             if (item.Value.ExpectedResponseTime < DateTime.Now)
@@ -41,7 +43,8 @@ namespace Abloom.Actors.Processmanager.Processors
                                 SentPasswords.TryGetValue(item.Key, out SentPassword sentPassword);
 
                                 if (sentPassword != null)
-                                    data.ReplyTo.Tell(new SendToWorkinNode(sentPassword.Passwords, Hash, item.Key, Self));
+                                    Context.ActorSelection(respondPath)
+                                        .Tell(new SendToWorkinNode(sentPassword.Passwords, Hash, item.Key));
                                 return;
                             }
 
@@ -53,7 +56,8 @@ namespace Abloom.Actors.Processmanager.Processors
                         PreparedToSend.TryRemove(new KeyValuePair<Guid, List<string>>(id, passwords));
                         SentPasswords.Add(id, new SentPassword(DateTime.Now, DateTime.Now + TimeSpan.FromMilliseconds(5500), passwords));
 
-                        data.ReplyTo.Tell(new SendToWorkinNode(passwords, Hash, id, Self));
+                        var data = new SendToWorkinNode(passwords, Hash, id);
+                        Context.ActorSelection(respondPath).Tell(data);
 
                         if (PreparedToSend.IsEmpty)
                         {
