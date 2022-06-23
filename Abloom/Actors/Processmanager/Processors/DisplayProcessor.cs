@@ -13,7 +13,7 @@ namespace Abloom.Actors.Processors
         private Timer timer;
         private int PasswordLength { get; set; }
         private BigInteger NumberOfPassCombinations { get; set; }
-        private BigInteger CurrentNumberOfComb { get; set; } = 1;
+        private BigInteger CurrentNumberOfComb { get; set; } = 0;
 
 
         protected override void OnReceive(object message)

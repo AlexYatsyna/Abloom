@@ -12,7 +12,7 @@ namespace Abloom.Actors.Processors
         {
             switch (message)
             {
-                case "Get data":
+                case "start":
                     GetData();
 
                     var displayProcessor = Context.ActorSelection("../display-processor");

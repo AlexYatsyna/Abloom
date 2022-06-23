@@ -29,7 +29,7 @@ namespace Abloom.Actors
             switch (message)
             {
                 case "start":
-                    Context.ActorSelection("*/get-data-processor").Tell("Get data");
+                    ProcessmanagerRef.Tell("start");
                     break;
 
                 case "End":

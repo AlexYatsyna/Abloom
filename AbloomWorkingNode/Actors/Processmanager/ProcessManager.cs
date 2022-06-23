@@ -6,10 +6,10 @@ namespace AbloomWorkingNode.Actors.Processmanager
 {
     internal class ProcessManager : UntypedActor
     {
-        private IActorRef PasswordCheckerRef { get; set; }
+        private IActorRef PasswordBalancerRef { get; set; }
         protected override void PreStart()
         {
-            PasswordCheckerRef = Context.ActorOf<PasswordCheckerProcessor>("password-checker");
+           PasswordBalancerRef = Context.ActorOf<PasswordCheckerBalancer>("password-balancer");
         }
         protected override void OnReceive(object message)
         {
@@ -20,7 +20,7 @@ namespace AbloomWorkingNode.Actors.Processmanager
                     break;
 
                 case SendToWorkinNode:
-                    PasswordCheckerRef.Forward(message);
+                    PasswordBalancerRef.Forward(message);
                     break;
             }
 

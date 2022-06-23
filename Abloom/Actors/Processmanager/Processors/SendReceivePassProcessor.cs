@@ -19,6 +19,7 @@ namespace Abloom.Actors.Processmanager.Processors
         private Dictionary<Guid, SentPassword> SentPasswords { get; set; } = new Dictionary<Guid,SentPassword>();
         private string Hash { get; set; }
         private bool isRequested = false;
+        private bool IsFound { get; set; } = false;
 
 
         protected override void PreStart()
@@ -32,14 +33,14 @@ namespace Abloom.Actors.Processmanager.Processors
             {
                 case "Ready for checking":
 
-                    if (!PreparedToSend.IsEmpty && Hash != null)
+                    if (!PreparedToSend.IsEmpty && Hash != null && !IsFound)
                     {
                         var respondPath = Sender.Path.Address + "/user/node";
                         foreach (var item in SentPasswords)
                         {
                             if (item.Value.ExpectedResponseTime < DateTime.Now)
                             {
-                                SentPasswords.AddOrSet(item.Key, new SentPassword(DateTime.Now, DateTime.Now + TimeSpan.FromMilliseconds(5500), item.Value.Passwords));
+                                SentPasswords.AddOrSet(item.Key, new SentPassword(DateTime.Now, DateTime.Now + TimeSpan.FromSeconds(60), item.Value.Passwords));
                                 SentPasswords.TryGetValue(item.Key, out SentPassword sentPassword);
 
                                 if (sentPassword != null)
@@ -54,14 +55,14 @@ namespace Abloom.Actors.Processmanager.Processors
                         var passwords = PreparedToSend.First().Value;
 
                         PreparedToSend.TryRemove(new KeyValuePair<Guid, List<string>>(id, passwords));
-                        SentPasswords.Add(id, new SentPassword(DateTime.Now, DateTime.Now + TimeSpan.FromMilliseconds(5500), passwords));
+                        SentPasswords.Add(id, new SentPassword(DateTime.Now, DateTime.Now + TimeSpan.FromSeconds(60), passwords));
 
                         var data = new SendToWorkinNode(passwords, Hash, id);
                         Context.ActorSelection(respondPath).Tell(data);
 
                         if (PreparedToSend.IsEmpty)
                         {
-                            PasswordgeneratorRef.Tell(new GetPasswordsIntervals(10, 25));
+                            PasswordgeneratorRef.Tell(new GetPasswordsIntervals(5, 250));
                             isRequested = true;
                         }
 
@@ -70,7 +71,7 @@ namespace Abloom.Actors.Processmanager.Processors
 
                     if (PreparedToSend.IsEmpty && !isRequested)
                     {
-                        PasswordgeneratorRef.Tell(new GetPasswordsIntervals(10, 25));
+                        PasswordgeneratorRef.Tell(new GetPasswordsIntervals(5, 250));
                         isRequested = true;
                     }
 
@@ -95,7 +96,10 @@ namespace Abloom.Actors.Processmanager.Processors
                         displayProcessor.Tell(new SetCurrentCombination(data.IntervalSize));
 
                         if (data.IsFound && data.Password != "")
+                        {
                             displayProcessor.Tell(new RespondFinishExecution(data.Password, data.IsFound));
+                            IsFound = true;
+                        }
                     }
                     break;
 
