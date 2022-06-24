@@ -18,6 +18,6 @@ namespace AbloomWorkingNode.Messages
             Password = password;
             this.IsFound = isFound;
             IntervalSize = intervalSize;
-        }   
+        }
     }
 }

@@ -7,7 +7,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Abloom.Actors.Processmanager.Processors
@@ -16,10 +15,11 @@ namespace Abloom.Actors.Processmanager.Processors
     {
         private IActorRef PasswordgeneratorRef { get; set; }
         private ConcurrentDictionary<Guid, List<string>> PreparedToSend { get; set; } = new ConcurrentDictionary<Guid, List<string>>();
-        private Dictionary<Guid, SentPassword> SentPasswords { get; set; } = new Dictionary<Guid,SentPassword>();
+        private Dictionary<Guid, SentPassword> SentPasswords { get; set; } = new Dictionary<Guid, SentPassword>();
         private string Hash { get; set; }
         private bool isRequested = false;
         private bool IsFound { get; set; } = false;
+        private TimeSpan ResponseTime { get; set; } = TimeSpan.FromMilliseconds(60000);
 
 
         protected override void PreStart()
@@ -40,7 +40,7 @@ namespace Abloom.Actors.Processmanager.Processors
                         {
                             if (item.Value.ExpectedResponseTime < DateTime.Now)
                             {
-                                SentPasswords.AddOrSet(item.Key, new SentPassword(DateTime.Now, DateTime.Now + TimeSpan.FromSeconds(60), item.Value.Passwords));
+                                SentPasswords.AddOrSet(item.Key, new SentPassword(DateTime.Now, DateTime.Now + ResponseTime, item.Value.Passwords));
                                 SentPasswords.TryGetValue(item.Key, out SentPassword sentPassword);
 
                                 if (sentPassword != null)
@@ -55,7 +55,7 @@ namespace Abloom.Actors.Processmanager.Processors
                         var passwords = PreparedToSend.First().Value;
 
                         PreparedToSend.TryRemove(new KeyValuePair<Guid, List<string>>(id, passwords));
-                        SentPasswords.Add(id, new SentPassword(DateTime.Now, DateTime.Now + TimeSpan.FromSeconds(60), passwords));
+                        SentPasswords.Add(id, new SentPassword(DateTime.Now, DateTime.Now + ResponseTime, passwords));
 
                         var data = new SendToWorkinNode(passwords, Hash, id);
                         Context.ActorSelection(respondPath).Tell(data);

@@ -9,7 +9,7 @@ namespace AbloomWorkingNode.Actors.Processmanager
         private IActorRef PasswordBalancerRef { get; set; }
         protected override void PreStart()
         {
-           PasswordBalancerRef = Context.ActorOf<PasswordCheckerBalancer>("password-balancer");
+            PasswordBalancerRef = Context.ActorOf<PasswordCheckerBalancer>("password-balancer");
         }
         protected override void OnReceive(object message)
         {

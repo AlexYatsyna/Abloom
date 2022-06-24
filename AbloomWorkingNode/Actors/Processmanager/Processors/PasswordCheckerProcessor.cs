@@ -1,8 +1,7 @@
 ﻿using AbloomWorkingNode.Hashers;
+using AbloomWorkingNode.Messages;
 using Akka.Actor;
 using Microsoft.AspNet.Identity;
-using AbloomWorkingNode.Messages;
-using System;
 using System.Numerics;
 
 namespace AbloomWorkingNode.Actors.Processmanager.Processors

@@ -1,12 +1,8 @@
 ﻿using Abloom.Messages;
 using Akka.Actor;
 using Akka.Routing;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Abloom.Actors.RouterManager
 {
@@ -20,7 +16,7 @@ namespace Abloom.Actors.RouterManager
         }
         protected override void OnReceive(object message)
         {
-            switch (message) 
+            switch (message)
             {
                 case SetPathRoutee data:
                     RouteeStorage.Add(data.Path, data.ActorRoutee);
@@ -32,7 +28,7 @@ namespace Abloom.Actors.RouterManager
                     break;
 
                 case RemovePathRoutee data:
-                    if(RouteeStorage.ContainsKey(data.Path))
+                    if (RouteeStorage.ContainsKey(data.Path))
                     {
                         RouterRef.Tell(new RemoveRoutee(RouteeStorage[data.Path]));
                         RouteeStorage.Remove(data.Path);

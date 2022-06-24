@@ -4,7 +4,6 @@ using Akka.Cluster;
 using Akka.Event;
 using Akka.Routing;
 using System;
-using System.Threading.Tasks;
 
 namespace Abloom.Actors.ClusterMangr
 {
