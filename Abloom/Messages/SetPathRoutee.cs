@@ -1,6 +1,6 @@
 ﻿using Akka.Routing;
 
-namespace Abloom.Messages
+namespace Abloom2.Messages
 {
     public sealed class SetPathRoutee
     {

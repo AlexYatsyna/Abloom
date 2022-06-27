@@ -3,9 +3,9 @@ using Akka.Actor;
 
 namespace AbloomWorkingNode.Actors.ClusterManagr
 {
-    internal class ClusterManager : UntypedActor
+    public class ClusterManager : UntypedActor
     {
-        private IActorRef ClusterListenerRef { get; set; }
+        private IActorRef? ClusterListenerRef { get; set; }
 
         protected override void PreStart()
         {

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using Identity.PasswordHasher;
 
 namespace AbloomWorkingNode.Hashers
 {
@@ -11,9 +11,9 @@ namespace AbloomWorkingNode.Hashers
             return CryptographyExtention.CreateHash(password + Salt);
         }
 
-        public override PasswordVerificationResult VerifyHashedPassword(string hashedPassword, string providedPassword)
+        public override bool VerifyHashedPassword(string hashedPassword, string providedPassword)
         {
-            return CryptographyExtention.Verify(providedPassword + Salt, hashedPassword) ? PasswordVerificationResult.Success : PasswordVerificationResult.Failed;
+            return CryptographyExtention.Verify(providedPassword + Salt, hashedPassword) ? true : false;
         }
     }
 }

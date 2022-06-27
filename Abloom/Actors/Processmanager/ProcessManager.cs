@@ -1,14 +1,13 @@
-﻿using Abloom.Actors.Processmanager.Processors;
-using Abloom.Actors.Processors;
+﻿using Abloom2.Actors.Processmanager.Processors;
 using Akka.Actor;
 
-namespace Abloom.Actors.Processmanager
+namespace Abloom2.Actors.Processmanager
 {
     internal class ProcessManager : UntypedActor
     {
-        private IActorRef GetDataRef { get; set; }
-        private IActorRef DisplayInfoRef { get; set; }
-        private IActorRef SendRecievePassRef { get; set; }
+        private IActorRef? GetDataRef { get; set; }
+        private IActorRef? DisplayInfoRef { get; set; }
+        private IActorRef? SendRecievePassRef { get; set; }
 
         protected override void PreStart()
         {

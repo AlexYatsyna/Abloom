@@ -6,7 +6,7 @@ namespace AbloomWorkingNode.Actors.Processmanager
 {
     internal class ProcessManager : UntypedActor
     {
-        private IActorRef PasswordBalancerRef { get; set; }
+        private IActorRef? PasswordBalancerRef { get; set; }
         protected override void PreStart()
         {
             PasswordBalancerRef = Context.ActorOf<PasswordCheckerBalancer>("password-balancer");

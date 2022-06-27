@@ -1,7 +1,6 @@
-﻿
-namespace Abloom.Messages
+﻿namespace Abloom2.Messages
 {
-    internal class RespondFinishExecution
+    public sealed class RespondFinishExecution
     {
         public string Password { get; }
         public bool IsCompleted { get; }

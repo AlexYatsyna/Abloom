@@ -6,11 +6,11 @@ using Akka.Actor;
 
 namespace AbloomWorkingNode.Actors
 {
-    internal class Node : UntypedActor
+    public class Node : UntypedActor
     {
-        private IActorRef ProcessmanagerRef { get; set; }
-        private IActorRef RouterManagerRef { get; set; }
-        private IActorRef ClusterManagerRef { get; set; }
+        private IActorRef? ProcessmanagerRef { get; set; }
+        private IActorRef? RouterManagerRef { get; set; }
+        private IActorRef? ClusterManagerRef { get; set; }
 
         protected override void PreStart()
         {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace AbloomWorkingNode.Messages
+﻿namespace AbloomWorkingNode.Messages
 {
     public interface IAppProtocol { }
     public sealed class SendToWorkinNode

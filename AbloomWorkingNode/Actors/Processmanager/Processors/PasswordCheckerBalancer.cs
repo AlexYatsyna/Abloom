@@ -1,18 +1,16 @@
 ﻿using AbloomWorkingNode.Messages;
 using Akka.Actor;
 using Akka.Routing;
-using System;
-using System.Linq;
 using System.Numerics;
 
 namespace AbloomWorkingNode.Actors.Processmanager.Processors
 {
     internal class PasswordCheckerBalancer : UntypedActor
     {
-        private IActorRef RouterRef { get; set; }
+        private IActorRef? RouterRef { get; set; }
         private BigInteger Counter { get; set; } = 0;
         private BigInteger ProcessedPasswords { get; set; } = 0;
-        private string RespondPath { get; set; }
+        private string? RespondPath { get; set; }
         private readonly int numberOfPasswordsInInterval = 50;
         private Guid CurrentIntervalID { get; set; }
 

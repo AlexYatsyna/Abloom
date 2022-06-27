@@ -180,10 +180,7 @@ case SendToWorkinNode data:
 PM> Install-Package Akka
 PM> Install-Package Akka.Cluster
 ```
-
-## 3. Add the Hashers folder with password verifying file *(Like BCrypt.Verify hash)* to the *worker* node.
-
-## 4. Configure 'App.conf' files using HOCON
+## 3. Configure 'App.conf' files using HOCON
 
 # About Configuration files
 

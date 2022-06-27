@@ -1,12 +1,11 @@
-﻿using Abloom.Messages;
+﻿using Abloom2.Messages;
 using Akka.Actor;
-using System;
 
-namespace Abloom.Actors.Processors
+namespace Abloom2.Actors.Processmanager.Processors
 {
     internal class GetDataProcessor : UntypedActor
     {
-        private string Hash { get; set; }
+        private string? Hash { get; set; }
         private int PassLength { get; set; }
         protected override void OnReceive(object message)
         {
@@ -18,8 +17,8 @@ namespace Abloom.Actors.Processors
                     var displayProcessor = Context.ActorSelection("../display-processor");
                     var sendRecieveProcessor = Context.ActorSelection("../password-processor");
 
-                    displayProcessor.Tell(new SetInitialData(Hash, PassLength));
-                    sendRecieveProcessor.Tell(new SetInitialData(Hash, PassLength));
+                    displayProcessor.Tell(new SetInitialData(Hash!, PassLength));
+                    sendRecieveProcessor.Tell(new SetInitialData(Hash!, PassLength));
                     displayProcessor.Tell("Display");
 
                     break;

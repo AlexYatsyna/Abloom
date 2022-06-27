@@ -1,4 +1,4 @@
-﻿namespace Abloom.Messages
+﻿namespace Abloom2.Messages
 {
     public sealed class RemovePathRoutee
     {

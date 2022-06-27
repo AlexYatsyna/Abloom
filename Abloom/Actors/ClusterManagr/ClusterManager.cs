@@ -1,12 +1,11 @@
-﻿using Abloom.Messages;
+﻿using Abloom2.Messages;
 using Akka.Actor;
 
-
-namespace Abloom.Actors.ClusterMangr
+namespace Abloom2.Actors.ClusterManagr
 {
     internal class ClusterManager : UntypedActor
     {
-        private IActorRef ClusterListenerRef { get; set; }
+        private IActorRef? ClusterListenerRef { get; set; }
 
         protected override void PreStart()
         {

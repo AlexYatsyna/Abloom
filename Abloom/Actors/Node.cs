@@ -1,16 +1,16 @@
-﻿using Abloom.Actors.ClusterMangr;
-using Abloom.Actors.Processmanager;
-using Abloom.Actors.RouterManager;
-using Abloom.Messages;
+﻿using Abloom2.Actors.ClusterManagr;
+using Abloom2.Actors.Processmanager;
+using Abloom2.Actors.RouterManager;
+using Abloom2.Messages;
 using Akka.Actor;
 
-namespace Abloom.Actors
+namespace Abloom2.Actors
 {
     internal class Node : UntypedActor
     {
-        private IActorRef ClusterManagerRef { get; set; }
-        private IActorRef ProcessmanagerRef { get; set; }
-        private IActorRef RouterManagerRef { get; set; }
+        private IActorRef? ClusterManagerRef { get; set; }
+        private IActorRef? ProcessmanagerRef { get; set; }
+        private IActorRef? RouterManagerRef { get; set; }
 
         protected override void PreStart()
         {

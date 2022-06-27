@@ -1,22 +1,18 @@
-﻿using Abloom.Messages;
-using Abloom.Models;
+﻿using Abloom2.Messages;
+using Abloom2.Models;
 using AbloomWorkingNode.Messages;
 using Akka.Actor;
 using Akka.Util.Internal;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Abloom.Actors.Processmanager.Processors
+namespace Abloom2.Actors.Processmanager.Processors
 {
-    public class SendReceivePassProcessor : UntypedActor
+    internal class SendReceivePassProcessor : UntypedActor
     {
-        private IActorRef PasswordgeneratorRef { get; set; }
+        private IActorRef? PasswordgeneratorRef { get; set; }
         private ConcurrentDictionary<Guid, List<string>> PreparedToSend { get; set; } = new ConcurrentDictionary<Guid, List<string>>();
         private Dictionary<Guid, SentPassword> SentPasswords { get; set; } = new Dictionary<Guid, SentPassword>();
-        private string Hash { get; set; }
+        private string? Hash { get; set; }
         private bool isRequested = false;
         private bool IsFound { get; set; } = false;
         private TimeSpan ResponseTime { get; set; } = TimeSpan.FromMilliseconds(60000);

@@ -1,11 +1,8 @@
-﻿using Abloom.Messages;
+﻿using Abloom2.Messages;
 using Akka.Actor;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 
-namespace Abloom.Actors.Processmanager.Processors
+namespace Abloom2.Actors.Processmanager.Processors
 {
     internal class PasswordGenerator : UntypedActor
     {

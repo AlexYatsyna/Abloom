@@ -1,15 +1,13 @@
-﻿using Abloom.Messages;
+﻿using Abloom2.Messages;
 using Akka.Actor;
 using Akka.Routing;
-using System.Collections.Generic;
-using System.Threading;
 
-namespace Abloom.Actors.RouterManager
+namespace Abloom2.Actors.RouterManager
 {
-    public class CustomRouterManager : UntypedActor
+    internal class CustomRouterManager : UntypedActor
     {
         private Dictionary<string, Routee> RouteeStorage = new Dictionary<string, Routee>();
-        private IActorRef RouterRef { get; set; }
+        private IActorRef? RouterRef { get; set; }
         protected override void PreStart()
         {
             RouterRef = Context.ActorOf(Props.Empty.WithRouter(FromConfig.Instance), "router");

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Abloom.Models
+﻿namespace Abloom2.Models
 {
     public sealed class SentPassword
     {

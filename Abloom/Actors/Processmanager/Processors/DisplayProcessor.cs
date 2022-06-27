@@ -1,16 +1,14 @@
-﻿using Abloom.Messages;
+﻿using Abloom2.Messages;
 using Akka.Actor;
-using System;
 using System.Numerics;
-using System.Threading.Tasks;
 using System.Timers;
 
-namespace Abloom.Actors.Processors
+namespace Abloom2.Actors.Processmanager.Processors
 {
     internal class DisplayProcessor : UntypedActor
     {
 
-        private Timer timer;
+        private System.Timers.Timer? timer;
         private int PasswordLength { get; set; }
         private BigInteger NumberOfPassCombinations { get; set; }
         private BigInteger CurrentNumberOfComb { get; set; } = 0;
@@ -30,7 +28,7 @@ namespace Abloom.Actors.Processors
                     break;
 
                 case "Display":
-                    timer = new Timer();
+                    timer = new System.Timers.Timer();
                     timer.Interval = 3000;
                     timer.Elapsed += DisplayInfo;
                     timer.AutoReset = true;
@@ -40,7 +38,7 @@ namespace Abloom.Actors.Processors
                     break;
 
                 case RespondFinishExecution finished:
-                    timer.Enabled = false;
+                    timer!.Enabled = false;
                     Console.WriteLine($" Password:  {finished.Password} \n Combination number: {CurrentNumberOfComb}");
 
                     Context.Parent.Tell("End");

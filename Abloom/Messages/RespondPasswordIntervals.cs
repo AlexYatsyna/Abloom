@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Abloom.Messages
+﻿namespace Abloom2.Messages
 {
     public sealed class RespondPasswordIntervals
     {

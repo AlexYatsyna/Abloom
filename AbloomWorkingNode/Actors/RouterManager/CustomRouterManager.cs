@@ -1,14 +1,12 @@
 ﻿using AbloomWorkingNode.Messages;
 using Akka.Actor;
 using Akka.Routing;
-using System.Collections.Generic;
-using System.Threading;
 
 namespace AbloomWorkingNode.Actors.RouterManager
 {
     public class CustomRouterManager : UntypedActor
     {
-        private IActorRef RouterRef { get; set; }
+        private IActorRef? RouterRef { get; set; }
         private Dictionary<string, Routee> RouteeStorage = new Dictionary<string, Routee>();
         protected override void PreStart()
         {

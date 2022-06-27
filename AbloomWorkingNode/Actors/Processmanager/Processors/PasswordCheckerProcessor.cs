@@ -1,14 +1,13 @@
 ﻿using AbloomWorkingNode.Hashers;
 using AbloomWorkingNode.Messages;
 using Akka.Actor;
-using Microsoft.AspNet.Identity;
 using System.Numerics;
 
 namespace AbloomWorkingNode.Actors.Processmanager.Processors
 {
     internal class PasswordCheckerProcessor : UntypedActor
     {
-        private CustomPasswordHasher Hasher { get; set; }
+        private CustomPasswordHasher? Hasher { get; set; }
         private BigInteger Counter { get; set; } = 0;
         protected override void PreStart()
         {
@@ -28,7 +27,7 @@ namespace AbloomWorkingNode.Actors.Processmanager.Processors
 
         private bool VerificatePassword(string password, string hash)
         {
-            if (Hasher.VerifyHashedPassword(hash, password) == PasswordVerificationResult.Success)
+            if (Hasher!.VerifyHashedPassword(hash, password))
             {
                 return true;
             }

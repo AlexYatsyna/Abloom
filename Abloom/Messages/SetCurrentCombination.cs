@@ -1,7 +1,6 @@
 ﻿using System.Numerics;
 
-
-namespace Abloom.Messages
+namespace Abloom2.Messages
 {
     public sealed class SetCurrentCombination
     {
