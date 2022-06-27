@@ -28,8 +28,7 @@
 	}
 	
 	cluster {
-		seed-nodes = ["akka.tcp://msys@localhost:5801",
-		"akka.tcp://msys@localhost:5800"]
+		seed-nodes = ["akka.tcp://msys@localhost:5800"]
 		roles = ["working-node"]
 	}
 }

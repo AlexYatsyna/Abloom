@@ -13,7 +13,7 @@ namespace AbloomWorkingNode.Actors.Processmanager.Processors
         private BigInteger Counter { get; set; } = 0;
         private BigInteger ProcessedPasswords { get; set; } = 0;
         private string RespondPath { get; set; }
-        private int numberOfPasswordsInInterval = 50;
+        private readonly int numberOfPasswordsInInterval = 50;
         private Guid CurrentIntervalID { get; set; }
 
         protected override void PreStart()

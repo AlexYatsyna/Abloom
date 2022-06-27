@@ -22,12 +22,12 @@ namespace Abloom
                     ImmutableHashSet<Type>.Empty.Add(typeof(IAppProtocol)))));
 
         public static readonly BootstrapSetup Bootstrap = BootstrapSetup.Create().WithConfig(
-            ConfigurationFactory.ParseString(File.ReadAllText("D:\\Abloom\\Abloom\\Configs\\App.conf")));
+            ConfigurationFactory.ParseString(File.ReadAllText(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent + "\\Configs\\App.conf")));
 
         public static readonly ActorSystemSetup ActorSystemSettings = ActorSystemSetup.Create(SerializationSettings, Bootstrap);
         static void Main(string[] args)
         {
-            //var config = ConfigurationFactory.ParseString(File.ReadAllText("D:\\Abloom\\Abloom\\Configs\\App.conf"));
+
             var system = ActorSystem.Create("msys", ActorSystemSettings);
             var node = system.ActorOf<Node>("node");
             node.Tell("start");

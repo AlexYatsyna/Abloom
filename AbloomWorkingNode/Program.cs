@@ -21,16 +21,17 @@ namespace AbloomWorkingNode
                     ImmutableHashSet<Type>.Empty.Add(typeof(IAppProtocol)))));
 
         public static readonly BootstrapSetup Bootstrap = BootstrapSetup.Create().WithConfig(
-            ConfigurationFactory.ParseString(File.ReadAllText("D:\\Abloom\\AbloomWorkingNode\\Configs\\App.conf")));
+            ConfigurationFactory.ParseString(File.ReadAllText(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent + "\\Configs\\App.conf")));
 
         public static readonly ActorSystemSetup ActorSystemSettings = ActorSystemSetup.Create(SerializationSettings, Bootstrap);
 
         static void Main(string[] args)
         {
-            //var config = ConfigurationFactory.ParseString(File.ReadAllText("D:\\Abloom\\AbloomWorkingNode\\Configs\\App.conf"));
             var system = ActorSystem.Create("msys", ActorSystemSettings);
             system.ActorOf<Node>("node");
             system.WhenTerminated.Wait();
+            
         }
     }
+    
 }

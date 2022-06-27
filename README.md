@@ -181,7 +181,7 @@ PM> Install-Package Akka
 PM> Install-Package Akka.Cluster
 ```
 
-## 3. Add the Hashers folder with password verifying file *(Like BCrypt.Verify hash)*. to the *worker* node.
+## 3. Add the Hashers folder with password verifying file *(Like BCrypt.Verify hash)* to the *worker* node.
 
 ## 4. Configure 'App.conf' files using HOCON
 
@@ -195,18 +195,18 @@ creation-timeout|Timeout for ActorSystem.actorOf
  reaper-interval | Frequency with which stopping actors are prodded in case they had to be removed from their parents
  serialize-messages | Serializes and deserializes (non-primitive) messages to ensure immutability
  serialize-creators | Serializes and deserializes creators (in Props) to ensure that they can be sent over the network
- ask-timeout | timeout for IActorRef.Ask
+ ask-timeout | Timeout for IActorRef.Ask
  serializers  | Entries for pluggable serializers and their bindings.
 serialization-bindings |Class to Serializer binding. You only need to specify the name of an interface or abstract base class of the messages. In case of ambiguity it is using the most specific configured class, or giving a warning and choosing the “first” one.
 
  ### deployment block:
 Parameter   | Description
 ----------- | -----------
-router | routing (load-balance) scheme to use available: "from-code", "round-robin", "random", "smallest-mailbox", "scatter-gather", "broadcast"  or:        Fully qualified class name of the router class.
-nr-of-instances | number of children to create in case of a router, this setting is ignored if routees.paths is given
+router | Routing (load-balance) scheme to use available: "from-code", "round-robin", "random", "smallest-mailbox", "scatter-gather", "broadcast"  or:        Fully qualified class name of the router class.
+nr-of-instances | Number of children to create in case of a router, this setting is ignored if routees.paths is given
 routees.paths | Alternatively to giving nr-of-instances you can specify the full paths of those actors which should be routed to. This setting takes precedence over nr-of-instances
-resizer | dynamically resizable number of routees as specified in resizer below
-within | within is the timeout used for routers containing future calls
+resizer | Dynamically resizable number of routees as specified in resizer below
+within | Within is the timeout used for routers containing future calls
 
 ## More Info [Configuration](https://getakka.net/articles/configuration/modules/akka.html).
 
