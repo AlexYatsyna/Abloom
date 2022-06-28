@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<configSections>
+		<section name="akka" type="Akka.Configuration.Hocon.AkkaConfigurationSection, Akka" />
+	</configSections>
+	<akka>
+		<hocon>
+			<![CDATA[
+				akka {
+
+					loglevel = Error
+	
+					actor
+					{
+
+					  provider = "Akka.Cluster.ClusterActorRefProvider, Akka.Cluster"
+					  deployment{
+						  /node/router-manager/router{
+							  router = round-robin-group
+							  routees.paths = []
+							  cluster{
+								  enable = on
+								  allow-local-routees = off
+								  use-role = working-node
+							  }
+						  }
+					  }
+					}
+
+					remote {
+						dot-netty.tcp {
+							port = 5800
+							hostname = "localhost"
+						}
+					}
+	
+					cluster {
+						seed-nodes = ["akka.tcp://msys@localhost:5800"]
+						roles = ["managing-node"]
+					}
+				}
+			]]>
+		</hocon>
+	</akka>
+</configuration>

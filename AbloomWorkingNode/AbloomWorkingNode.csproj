@@ -14,4 +14,10 @@
     <PackageReference Include="Identity.PasswordHasher" Version="1.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="App.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

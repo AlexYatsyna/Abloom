@@ -6,7 +6,7 @@ using Akka.Actor.Setup;
 using Akka.Configuration;
 using Akka.Serialization;
 using System.Collections.Immutable;
-
+using System.Xml.Linq;
 
 SerializationSetup GetSerializationSettings() =>
     SerializationSetup.Create(actorSystem =>
@@ -18,7 +18,7 @@ SerializationSetup GetSerializationSettings() =>
 
 var Bootstrap = BootstrapSetup.Create().WithConfig(
             ConfigurationFactory.ParseString(
-                File.ReadAllText($"{Directory.GetParent(Environment.CurrentDirectory)?.Parent?.Parent}\\App.conf")));
+                XElement.Parse(File.ReadAllText(Directory.GetCurrentDirectory() + "\\App.config")).Descendants("hocon").Single().Value));
 
 var ActorSystemSettings = ActorSystemSetup.Create(GetSerializationSettings(), Bootstrap);
 
