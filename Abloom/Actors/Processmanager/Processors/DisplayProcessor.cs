@@ -19,8 +19,12 @@ namespace Abloom2.Actors.Processmanager.Processors
             switch (message)
             {
                 case SetInitialData data:
-                    NumberOfPassCombinations = data.NumberOfPassCombinations;
                     PasswordLength = data.PasswordLength;
+                    break;
+
+                case SetNumberOfCombinations data:
+                    NumberOfPassCombinations = data.NumberOfCombinations;
+                    Self.Tell("Display");
                     break;
 
                 case SetCurrentCombination current:

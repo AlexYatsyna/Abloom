@@ -19,7 +19,6 @@ namespace Abloom2.Actors.Processmanager.Processors
 
                     displayProcessor.Tell(new SetInitialData(Hash!, PassLength));
                     sendRecieveProcessor.Tell(new SetInitialData(Hash!, PassLength));
-                    displayProcessor.Tell("Display");
 
                     break;
             }

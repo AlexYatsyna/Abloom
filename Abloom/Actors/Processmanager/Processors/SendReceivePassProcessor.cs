@@ -1,4 +1,5 @@
-﻿using Abloom2.Messages;
+﻿using Abloom.Cryptography;
+using Abloom2.Messages;
 using Abloom2.Models;
 using AbloomWorkingNode.Messages;
 using Akka.Actor;
@@ -9,19 +10,11 @@ namespace Abloom2.Actors.Processmanager.Processors
 {
     internal class SendReceivePassProcessor : UntypedActor
     {
-        private IActorRef? PasswordgeneratorRef { get; set; }
-        private ConcurrentDictionary<Guid, List<string>> PreparedToSend { get; set; } = new ConcurrentDictionary<Guid, List<string>>();
-        private Dictionary<Guid, SentPassword> SentPasswords { get; set; } = new Dictionary<Guid, SentPassword>();
+        private Dictionary<Guid, SentPassword> SentPasswords { get; set; } = new();
+        private PasswordGenerator Generator { get; set; }
         private string? Hash { get; set; }
-        private bool isRequested = false;
         private bool IsFound { get; set; } = false;
         private TimeSpan ResponseTime { get; set; } = TimeSpan.FromMilliseconds(60000);
-
-
-        protected override void PreStart()
-        {
-            PasswordgeneratorRef = Context.ActorOf<PasswordGenerator>("password-generator");
-        }
 
         protected override void OnReceive(object message)
         {
@@ -29,7 +22,7 @@ namespace Abloom2.Actors.Processmanager.Processors
             {
                 case "Ready for checking":
 
-                    if (!PreparedToSend.IsEmpty && Hash != null && !IsFound)
+                    if (Hash != null && !IsFound)
                     {
                         var respondPath = Sender.Path.Address + "/user/node";
                         foreach (var item in SentPasswords)
@@ -47,42 +40,18 @@ namespace Abloom2.Actors.Processmanager.Processors
 
                         }
 
-                        var id = PreparedToSend.First().Key;
-                        var passwords = PreparedToSend.First().Value;
+                        var id = Guid.NewGuid();
+                        var passwords = Generator.GetPasswords(250);
 
-                        PreparedToSend.TryRemove(new KeyValuePair<Guid, List<string>>(id, passwords));
                         SentPasswords.Add(id, new SentPassword(DateTime.Now, DateTime.Now + ResponseTime, passwords));
 
                         var data = new SendToWorkinNode(passwords, Hash, id);
                         Context.ActorSelection(respondPath).Tell(data);
 
-                        if (PreparedToSend.IsEmpty)
-                        {
-                            PasswordgeneratorRef.Tell(new GetPasswordsIntervals(5, 250));
-                            isRequested = true;
-                        }
-
                         break;
                     }
 
-                    if (PreparedToSend.IsEmpty && !isRequested)
-                    {
-                        PasswordgeneratorRef.Tell(new GetPasswordsIntervals(5, 250));
-                        isRequested = true;
-                    }
-
                     Self.Forward(message);
-                    break;
-
-                case RespondPasswordIntervals data:
-                    Task.Run(() =>
-                    {
-                        foreach (var item in data.Intervals)
-                        {
-                            PreparedToSend.GetOrAdd(Guid.NewGuid(), item);
-                        }
-                        isRequested = false;
-                    });
                     break;
 
                 case RespondPassword data:
@@ -101,7 +70,8 @@ namespace Abloom2.Actors.Processmanager.Processors
 
                 case SetInitialData data:
                     Hash = data.Hash;
-                    PasswordgeneratorRef.Tell(data);
+                    Generator = new PasswordGenerator(data.PasswordLength);
+                    Context.ActorSelection("../display-processor").Tell(new SetNumberOfCombinations(Generator.NumberOfCombinations));
                     break;
             }
         }
