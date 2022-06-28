@@ -11,6 +11,7 @@ namespace Abloom2.Actors.Processmanager.Processors
 
         private Timer timer = new();
         private int PasswordLength { get; set; }
+        private int NumberOfNodes { get; set; } = 0;
         private BigInteger NumberOfPassCombinations { get; set; }
         private BigInteger CurrentNumberOfComb { get; set; } = 0;
 
@@ -32,7 +33,7 @@ namespace Abloom2.Actors.Processmanager.Processors
                     break;
 
                 case "Display":
-                   
+
                     timer.Interval = 3000;
                     timer.Elapsed += DisplayInfo;
                     timer.AutoReset = true;
@@ -52,12 +53,10 @@ namespace Abloom2.Actors.Processmanager.Processors
 
         private void DisplayInfo(object source, ElapsedEventArgs e)
         {
-            Console.Clear();
-
             var percent = CurrentNumberOfComb * 100 / NumberOfPassCombinations;
 
-            Console.WriteLine("\n\t\t\tPress 'x' to exit");
-            Console.WriteLine($"\n\n{percent} % , {CurrentNumberOfComb:N0} / {NumberOfPassCombinations:N0} combinations for for password length {PasswordLength} \n\n");
+            Console.WriteLine($"[INFO] [{DateTime.Now.ToLongTimeString()}] {percent} % , {CurrentNumberOfComb:N0} / {NumberOfPassCombinations:N0}(password length {PasswordLength})");
+            Console.WriteLine($"Number of nodes in the cluster: {NumberOfNodes}\n");
         }
 
         private string GetHotkeysFromUser()

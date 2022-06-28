@@ -31,6 +31,7 @@ namespace Abloom2.Actors.Processmanager.Processors
 
             Console.WriteLine("Enter password length:");
             PassLength = Convert.ToInt32(Console.ReadLine());
+            Console.Clear();
         }
     }
 }

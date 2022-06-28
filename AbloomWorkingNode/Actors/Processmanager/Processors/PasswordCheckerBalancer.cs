@@ -11,13 +11,13 @@ namespace AbloomWorkingNode.Actors.Processmanager.Processors
         private BigInteger Counter { get; set; } = 0;
         private BigInteger ProcessedPasswords { get; set; } = 0;
         private string? RespondPath { get; set; }
-        private readonly int numberOfPasswordsInInterval = 25;
+        private readonly int numberOfPasswords = 25;
         private Guid CurrentIntervalID { get; set; }
 
         protected override void PreStart()
         {
             RouterRef = Context.ActorOf(Props.Create<PasswordCheckerProcessor>().WithRouter
-                (new RoundRobinPool(1, new DefaultResizer(2, Environment.ProcessorCount - 2, backoffThreshold: 0.4, backoffRate: 0.3, messagesPerResize: 3))), "check-router");
+                (new RoundRobinPool(1, new DefaultResizer(5, Environment.ProcessorCount - 2, backoffThreshold: 0.4, backoffRate: 0.3, messagesPerResize: 3))), "check-router");
         }
         protected override void OnReceive(object message)
         {
@@ -28,11 +28,11 @@ namespace AbloomWorkingNode.Actors.Processmanager.Processors
                     RespondPath = Sender.Path.Address + "/user/node/process-manager/password-processor";
                     Counter = data.Passwords.Count;
                     CurrentIntervalID = data.Id;
-                    var numberOfIntervals = (int)Counter / numberOfPasswordsInInterval;
+                    var numberOfIntervals = (int)Counter / numberOfPasswords;
 
                     for (int i = 0; i < numberOfIntervals; i++)
                     {
-                        RouterRef.Tell(new SendToWorkinNode(data.Passwords.Skip(i * numberOfPasswordsInInterval).Take(numberOfPasswordsInInterval).ToList(), data.Hash, data.Id));
+                        RouterRef.Tell(new SendToWorkinNode(data.Passwords.Skip(i * numberOfPasswords).Take(numberOfPasswords).ToList(), data.Hash, data.Id));
                     }
                     break;
 

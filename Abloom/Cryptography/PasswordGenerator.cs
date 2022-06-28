@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Numerics;
 
 namespace Abloom.Cryptography
 {
     internal class PasswordGenerator
     {
         const string NUMBERS = "0123456789";
-        const string ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const string ALPHABETL = "abcdefghijklmnopqrstuvwxyz";
+        const string ALPHABETU = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         const string PUNCTUATION = "!@#$%^&*()_+";
-        private string Chars { get; set; } = ALPHABET.ToLower() + ALPHABET.ToUpper() + NUMBERS + PUNCTUATION;
-
+        private string Chars { get; set; } = ALPHABETL + ALPHABETU + NUMBERS + PUNCTUATION;
         public BigInteger NumberOfCombinations { get; private set; }
         private BigInteger LastCombination { get; set; } = 0;
         private int PasswordLength { get; set; }
@@ -25,24 +20,24 @@ namespace Abloom.Cryptography
             NumberOfCombinations = BigInteger.Pow(Chars.Length, PasswordLength);
         }
 
-        private List<string> GeneratePasswords(int numberOfPasswords)
+        public List<string> GetPasswords(int numberOfPasswords)
         {
-            var passwords = new List<string>();
+            var passwords = new List<string>(numberOfPasswords);
 
-            for (BigInteger i = LastCombination; i < NumberOfCombinations; i++, LastCombination++)
+            for (var i = LastCombination; i < NumberOfCombinations; i++, LastCombination++)
             {
                 var password = "";
                 var val = i;
 
-                for (int j = 0; j < PasswordLength; j++)
+                for (var j = 0; j < PasswordLength; j++)
                 {
                     var ch = (int)(val % Chars.Length);
 
-                    if (j == 3 && !ALPHABET.ToLower().Contains(Chars[ch]))
+                    if (j == 3 && !ALPHABETL.Contains(Chars[ch]))
                         break;
                     if (j == 2 && !NUMBERS.Contains(Chars[ch]))
                         break;
-                    if (j == 1 && !ALPHABET.ToUpper().Contains(Chars[ch]))
+                    if (j == 1 && !ALPHABETU.Contains(Chars[ch]))
                         break;
                     if (j == 0 && !PUNCTUATION.Contains(Chars[ch]))
                         break;
@@ -54,7 +49,7 @@ namespace Abloom.Cryptography
 
                 if (password.Length == PasswordLength)
                 {
-                    passwords.Add(new String(password));
+                    passwords.Add(password);
 
                     if (passwords.Count == numberOfPasswords)
                         break;
@@ -64,11 +59,6 @@ namespace Abloom.Cryptography
             LastCombination++;
 
             return passwords;
-        }
-
-        public List<string> GetPasswords(int numebrOfPasswords)
-        {
-            return GeneratePasswords(numebrOfPasswords);
         }
     }
 }

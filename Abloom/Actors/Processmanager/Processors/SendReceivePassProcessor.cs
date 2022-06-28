@@ -14,7 +14,7 @@ namespace Abloom2.Actors.Processmanager.Processors
         private PasswordGenerator Generator { get; set; }
         private string? Hash { get; set; }
         private bool IsFound { get; set; } = false;
-        private TimeSpan ResponseTime { get; set; } = TimeSpan.FromMilliseconds(60000);
+        private TimeSpan CriticalResponseTime { get; set; } = TimeSpan.FromMilliseconds(60000);
 
         protected override void OnReceive(object message)
         {
@@ -29,7 +29,7 @@ namespace Abloom2.Actors.Processmanager.Processors
                         {
                             if (item.Value.ExpectedResponseTime < DateTime.Now)
                             {
-                                SentPasswords.AddOrSet(item.Key, new SentPassword(DateTime.Now, DateTime.Now + ResponseTime, item.Value.Passwords));
+                                SentPasswords.AddOrSet(item.Key, new SentPassword(DateTime.Now, DateTime.Now + CriticalResponseTime, item.Value.Passwords));
                                 SentPasswords.TryGetValue(item.Key, out var sentPassword);
 
                                 if (sentPassword != null)
@@ -43,7 +43,7 @@ namespace Abloom2.Actors.Processmanager.Processors
                         var id = Guid.NewGuid();
                         var passwords = Generator.GetPasswords(250);
 
-                        SentPasswords.Add(id, new SentPassword(DateTime.Now, DateTime.Now + ResponseTime, passwords));
+                        SentPasswords.Add(id, new SentPassword(DateTime.Now, DateTime.Now + CriticalResponseTime, passwords));
 
                         var data = new SendToWorkinNode(passwords, Hash, id);
                         Context.ActorSelection(respondPath).Tell(data);
