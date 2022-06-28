@@ -11,13 +11,13 @@ namespace AbloomWorkingNode.Actors.Processmanager.Processors
         private BigInteger Counter { get; set; } = 0;
         private BigInteger ProcessedPasswords { get; set; } = 0;
         private string? RespondPath { get; set; }
-        private readonly int numberOfPasswordsInInterval = 50;
+        private readonly int numberOfPasswordsInInterval = 25;
         private Guid CurrentIntervalID { get; set; }
 
         protected override void PreStart()
         {
             RouterRef = Context.ActorOf(Props.Create<PasswordCheckerProcessor>().WithRouter
-                (new RoundRobinPool(1, new DefaultResizer(2, Environment.ProcessorCount - 2, backoffThreshold: 0.4, backoffRate: 0.3, messagesPerResize: 5))), "check-router");
+                (new RoundRobinPool(1, new DefaultResizer(2, Environment.ProcessorCount - 2, backoffThreshold: 0.4, backoffRate: 0.3, messagesPerResize: 3))), "check-router");
         }
         protected override void OnReceive(object message)
         {
