@@ -7,12 +7,8 @@ namespace AbloomWorkingNode.Actors.Processmanager.Processors
 {
     internal class PasswordCheckerProcessor : UntypedActor
     {
-        private CustomPasswordHasher? Hasher { get; set; }
+        private CustomPasswordHasher Hasher { get; } = new();
         private BigInteger Counter { get; set; } = 0;
-        protected override void PreStart()
-        {
-            Hasher = new CustomPasswordHasher();
-        }
 
         public RespondPassword StartCheck(SendToWorkinNode message)
         {

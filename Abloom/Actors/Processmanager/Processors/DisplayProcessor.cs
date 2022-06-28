@@ -2,17 +2,17 @@
 using Akka.Actor;
 using System.Numerics;
 using System.Timers;
+using Timer = System.Timers.Timer;
 
 namespace Abloom2.Actors.Processmanager.Processors
 {
     internal class DisplayProcessor : UntypedActor
     {
 
-        private System.Timers.Timer? timer;
+        private Timer timer = new();
         private int PasswordLength { get; set; }
         private BigInteger NumberOfPassCombinations { get; set; }
         private BigInteger CurrentNumberOfComb { get; set; } = 0;
-
 
         protected override void OnReceive(object message)
         {
@@ -28,7 +28,7 @@ namespace Abloom2.Actors.Processmanager.Processors
                     break;
 
                 case "Display":
-                    timer = new System.Timers.Timer();
+                   
                     timer.Interval = 3000;
                     timer.Elapsed += DisplayInfo;
                     timer.AutoReset = true;
@@ -38,14 +38,12 @@ namespace Abloom2.Actors.Processmanager.Processors
                     break;
 
                 case RespondFinishExecution finished:
-                    timer!.Enabled = false;
+                    timer.Enabled = false;
                     Console.WriteLine($" Password:  {finished.Password} \n Combination number: {CurrentNumberOfComb}");
 
                     Context.Parent.Tell("End");
                     break;
-
             }
-
         }
 
         private void DisplayInfo(object source, ElapsedEventArgs e)

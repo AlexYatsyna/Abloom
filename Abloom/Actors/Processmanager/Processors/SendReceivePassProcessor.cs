@@ -37,7 +37,7 @@ namespace Abloom2.Actors.Processmanager.Processors
                             if (item.Value.ExpectedResponseTime < DateTime.Now)
                             {
                                 SentPasswords.AddOrSet(item.Key, new SentPassword(DateTime.Now, DateTime.Now + ResponseTime, item.Value.Passwords));
-                                SentPasswords.TryGetValue(item.Key, out SentPassword sentPassword);
+                                SentPasswords.TryGetValue(item.Key, out var sentPassword);
 
                                 if (sentPassword != null)
                                     Context.ActorSelection(respondPath)

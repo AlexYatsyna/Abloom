@@ -6,7 +6,7 @@ namespace Abloom2.Actors.RouterManager
 {
     internal class CustomRouterManager : UntypedActor
     {
-        private Dictionary<string, Routee> RouteeStorage = new Dictionary<string, Routee>();
+        private Dictionary<string, Routee> RouteeStorage = new();
         private IActorRef? RouterRef { get; set; }
         protected override void PreStart()
         {

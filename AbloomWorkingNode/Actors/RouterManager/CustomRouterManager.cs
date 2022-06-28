@@ -7,7 +7,7 @@ namespace AbloomWorkingNode.Actors.RouterManager
     public class CustomRouterManager : UntypedActor
     {
         private IActorRef? RouterRef { get; set; }
-        private Dictionary<string, Routee> RouteeStorage = new Dictionary<string, Routee>();
+        private Dictionary<string, Routee> RouteeStorage = new();
         protected override void PreStart()
         {
             RouterRef = Context.ActorOf(Props.Empty.WithRouter(FromConfig.Instance), "task-router");

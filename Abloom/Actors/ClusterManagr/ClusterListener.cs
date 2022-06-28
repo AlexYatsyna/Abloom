@@ -10,15 +10,15 @@ namespace Abloom2.Actors.ClusterManagr
     internal class ClusterListener : UntypedActor
     {
         private ILoggingAdapter Log { get; } = Context.GetLogger();
-        private Cluster cluster = Cluster.Get(Context.System);
+        private Cluster Cluster { get; } = Cluster.Get(Context.System);
 
         protected override void PreStart()
         {
-            cluster.Subscribe(Self, ClusterEvent.InitialStateAsEvents, typeof(ClusterEvent.IMemberEvent));
+            Cluster.Subscribe(Self, ClusterEvent.InitialStateAsEvents, typeof(ClusterEvent.IMemberEvent));
         }
         protected override void PostStop()
         {
-            cluster.Unsubscribe(Self);
+            Cluster.Unsubscribe(Self);
         }
 
 
