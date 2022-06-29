@@ -1,4 +1,5 @@
-﻿using Abloom2.Actors.Processmanager.Processors;
+﻿using Abloom.Messages;
+using Abloom2.Actors.Processmanager.Processors;
 using Akka.Actor;
 
 namespace Abloom2.Actors.Processmanager
@@ -29,6 +30,10 @@ namespace Abloom2.Actors.Processmanager
                     break;
 
                 case "End":
+                    Context.Parent.Forward(message);
+                    break;
+
+                case GetMembers:
                     Context.Parent.Forward(message);
                     break;
             }

@@ -1,4 +1,5 @@
-﻿using Abloom2.Actors.ClusterManagr;
+﻿using Abloom.Messages;
+using Abloom2.Actors.ClusterManagr;
 using Abloom2.Actors.Processmanager;
 using Abloom2.Actors.RouterManager;
 using Abloom2.Messages;
@@ -42,6 +43,10 @@ namespace Abloom2.Actors
 
                 case RemovePathRoutee:
                     RouterManagerRef.Forward(message);
+                    break;
+
+                case GetMembers:
+                    ClusterManagerRef.Forward(message);
                     break;
             }
         }
