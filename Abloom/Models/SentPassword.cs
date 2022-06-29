@@ -1,4 +1,4 @@
-﻿namespace Abloom2.Models
+﻿namespace Abloom.Models
 {
     public sealed class SentPassword
     {

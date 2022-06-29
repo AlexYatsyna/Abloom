@@ -1,37 +1,40 @@
-﻿using Abloom2.Messages;
+﻿using Abloom.Messages;
 using Akka.Actor;
 
-namespace Abloom2.Actors.Processmanager.Processors
+namespace Abloom.Actors.Processmanager.Processors
 {
     internal class GetDataProcessor : UntypedActor
     {
-        private string? Hash { get; set; }
-        private int PassLength { get; set; }
         protected override void OnReceive(object message)
         {
             switch (message)
             {
                 case "start":
-                    GetData();
+                    Console.WriteLine("Enter password hash:");
+                    var hash = Console.ReadLine();
+
+                    Console.WriteLine("Enter password length:");
+                    if (!int.TryParse(Console.ReadLine(), out int passLength))
+                    {
+                        Console.Clear();
+                        Console.WriteLine("Incorrect password length!!!");
+
+                        Self.Tell("start");
+                        break;
+                    }
+
+                    Console.Clear();
 
                     var displayProcessor = Context.ActorSelection("../display-processor");
                     var sendRecieveProcessor = Context.ActorSelection("../password-processor");
+                    var messag = new SetInitialData(hash!, passLength);
 
-                    displayProcessor.Tell(new SetInitialData(Hash!, PassLength));
-                    sendRecieveProcessor.Tell(new SetInitialData(Hash!, PassLength));
+                    displayProcessor.Tell(messag);
+                    sendRecieveProcessor.Tell(messag);
 
                     break;
             }
         }
 
-        private void GetData()
-        {
-            Console.WriteLine("Enter password hash:");
-            Hash = Console.ReadLine();
-
-            Console.WriteLine("Enter password length:");
-            PassLength = Convert.ToInt32(Console.ReadLine());
-            Console.Clear();
-        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Abloom2.Actors;
+﻿using Abloom.Actors;
 using AbloomWorkingNode.Messages;
 using AbloomWorkingNode.Serializers;
 using Akka.Actor;

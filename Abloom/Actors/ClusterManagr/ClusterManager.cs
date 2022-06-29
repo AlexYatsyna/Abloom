@@ -1,9 +1,8 @@
 ﻿using Abloom.Messages;
-using Abloom2.Messages;
 using Akka.Actor;
 using Akka.Cluster;
 
-namespace Abloom2.Actors.ClusterManagr
+namespace Abloom.Actors.ClusterManagr
 {
     internal class ClusterManager : UntypedActor
     {

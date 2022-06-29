@@ -1,11 +1,11 @@
-﻿using Abloom2.Messages;
+﻿using Abloom.Messages;
 using Akka.Actor;
 using Akka.Cluster;
 using Akka.Event;
 using Akka.Routing;
 
 
-namespace Abloom2.Actors.ClusterManagr
+namespace Abloom.Actors.ClusterManagr
 {
     internal class ClusterListener : UntypedActor
     {

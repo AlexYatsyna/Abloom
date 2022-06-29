@@ -1,12 +1,9 @@
 ﻿using Abloom.Messages;
-using Abloom2.Messages;
 using Akka.Actor;
 using Akka.Cluster;
 using System.Numerics;
-using System.Timers;
-using Timer = System.Timers.Timer;
 
-namespace Abloom2.Actors.Processmanager.Processors
+namespace Abloom.Actors.Processmanager.Processors
 {
     internal class DisplayProcessor : UntypedActor
     {

@@ -1,11 +1,10 @@
-﻿using Abloom.Messages;
-using Abloom2.Actors.ClusterManagr;
-using Abloom2.Actors.Processmanager;
-using Abloom2.Actors.RouterManager;
-using Abloom2.Messages;
+﻿using Abloom.Actors.ClusterManagr;
+using Abloom.Actors.Processmanager;
+using Abloom.Actors.RouterManager;
+using Abloom.Messages;
 using Akka.Actor;
 
-namespace Abloom2.Actors
+namespace Abloom.Actors
 {
     internal class Node : UntypedActor
     {

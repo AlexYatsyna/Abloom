@@ -1,8 +1,8 @@
-﻿using Abloom2.Messages;
+﻿using Abloom.Messages;
 using Akka.Actor;
 using Akka.Routing;
 
-namespace Abloom2.Actors.RouterManager
+namespace Abloom.Actors.RouterManager
 {
     internal class CustomRouterManager : UntypedActor
     {

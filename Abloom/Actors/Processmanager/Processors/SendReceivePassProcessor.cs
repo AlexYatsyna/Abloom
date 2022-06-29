@@ -1,12 +1,11 @@
 ﻿using Abloom.Cryptography;
-using Abloom2.Messages;
-using Abloom2.Models;
+using Abloom.Messages;
+using Abloom.Models;
 using AbloomWorkingNode.Messages;
 using Akka.Actor;
 using Akka.Util.Internal;
-using System.Collections.Concurrent;
 
-namespace Abloom2.Actors.Processmanager.Processors
+namespace Abloom.Actors.Processmanager.Processors
 {
     internal class SendReceivePassProcessor : UntypedActor
     {

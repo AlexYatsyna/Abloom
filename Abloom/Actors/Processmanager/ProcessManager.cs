@@ -1,8 +1,8 @@
-﻿using Abloom.Messages;
-using Abloom2.Actors.Processmanager.Processors;
+﻿using Abloom.Actors.Processmanager.Processors;
+using Abloom.Messages;
 using Akka.Actor;
 
-namespace Abloom2.Actors.Processmanager
+namespace Abloom.Actors.Processmanager
 {
     internal class ProcessManager : UntypedActor
     {

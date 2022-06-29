@@ -17,7 +17,7 @@ namespace AbloomWorkingNode.Actors.Processmanager.Processors
         protected override void PreStart()
         {
             RouterRef = Context.ActorOf(Props.Create<PasswordCheckerProcessor>().WithRouter
-                (new RoundRobinPool(1, new DefaultResizer(5, Environment.ProcessorCount - 2, backoffThreshold: 0.4, backoffRate: 0.3, messagesPerResize: 3))), "check-router");
+                (new RoundRobinPool(1, new DefaultResizer(2, Environment.ProcessorCount - 2, backoffThreshold: 0.4, backoffRate: 0.3, messagesPerResize: 3))), "check-router");
         }
         protected override void OnReceive(object message)
         {
