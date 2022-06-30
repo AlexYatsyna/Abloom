@@ -182,7 +182,7 @@ PM> Install-Package Akka.Cluster
 ```
 ## 3. Configure 'App.conf' files using HOCON
 
-## 4. Initialize and start app with seed nodes
+## 4. Initialize and start "worker" apps like seed nodes (2-3)
 
 ## 5. Start "manager" or "worker" node
 
