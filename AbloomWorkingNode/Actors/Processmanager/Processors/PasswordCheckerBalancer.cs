@@ -12,7 +12,7 @@ namespace AbloomWorkingNode.Actors.Processmanager.Processors
         private BigInteger ProcessedPasswords { get; set; } = 0;
         private string? RespondPath { get; set; }
         private readonly int numberOfParts = 15;
-        private Guid CurrentIntervalID { get; set; }
+        private Guid CurrentID { get; set; }
 
         protected override void PreStart()
         {
@@ -49,7 +49,7 @@ namespace AbloomWorkingNode.Actors.Processmanager.Processors
 
                     RespondPath = Sender.Path.Address + "/user/node/process-manager/password-processor";
                     Counter = data.Passwords.Count;
-                    CurrentIntervalID = data.Id;
+                    CurrentID = data.Id;
 
                     var parts = Split<string>(data.Passwords, numberOfParts);
                     parts.ToList().ForEach(item => { RouterRef.Tell(new SendToWorkinNode(item.ToList(), data.Hash, data.Id)); });
@@ -57,7 +57,7 @@ namespace AbloomWorkingNode.Actors.Processmanager.Processors
 
                 case RespondPassword data:
 
-                    if (CurrentIntervalID != data.Id)
+                    if (CurrentID != data.Id)
                         break;
 
                     Counter -= data.IntervalSize;
@@ -69,7 +69,7 @@ namespace AbloomWorkingNode.Actors.Processmanager.Processors
 
                         ProcessedPasswords = 0;
                         Counter = 0;
-                        CurrentIntervalID = Guid.Empty;
+                        CurrentID = Guid.Empty;
 
                         Context.Parent.Tell("Ready for checking");
                     }

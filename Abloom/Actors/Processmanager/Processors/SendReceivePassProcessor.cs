@@ -73,7 +73,9 @@ namespace Abloom.Actors.Processmanager.Processors
                     break;
 
                 case Exception ex:
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(ex);
+                    Console.ForegroundColor = ConsoleColor.White;
                     Context.Parent.Tell("End");
                     break;
             }

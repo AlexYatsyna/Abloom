@@ -27,7 +27,7 @@ namespace Abloom.Actors.ClusterManagr
             switch (message)
             {
                 case ClusterEvent.MemberUp member:
-                    Log.Info("\n\nMember is up: {0}\n\n", member.Member);
+                    Log.Info("\nMember is up: {0}\n", member.Member);
                     if (member.Member.HasRole("working-node"))
                     {
                         var path = member.Member.Address + "/user/node";
@@ -38,11 +38,11 @@ namespace Abloom.Actors.ClusterManagr
                     break;
 
                 case ClusterEvent.UnreachableMember member:
-                    Log.Info("\n\nMember is unreachable: {0}\n\n", member.Member);
+                    Log.Info("\nMember is unreachable: {0}\n", member.Member);
                     break;
 
                 case ClusterEvent.MemberRemoved member:
-                    Log.Info("\n\nMember is removed: {0}\n\n", member.Member);
+                    Log.Info("\nMember is removed: {0}\n", member.Member);
                     if (member.Member.HasRole("working-node"))
                     {
                         var path = member.Member.Address + "/user/node";
