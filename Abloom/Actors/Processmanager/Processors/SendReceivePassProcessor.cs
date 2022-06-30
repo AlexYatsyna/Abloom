@@ -44,8 +44,7 @@ namespace Abloom.Actors.Processmanager.Processors
 
                         SentPasswords.Add(id, new SentPassword(DateTime.Now, DateTime.Now + CriticalResponseTime, passwords));
 
-                        var data = new SendToWorkinNode(passwords, Hash, id);
-                        Context.ActorSelection(respondPath).Tell(data);
+                        Context.ActorSelection(respondPath).Tell(new SendToWorkinNode(passwords, Hash, id));
 
                         break;
                     }

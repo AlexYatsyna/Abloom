@@ -11,13 +11,13 @@ namespace AbloomWorkingNode.Actors.Processmanager.Processors
         private BigInteger Counter { get; set; } = 0;
         private BigInteger ProcessedPasswords { get; set; } = 0;
         private string? RespondPath { get; set; }
-        private readonly int numberOfPasswords = 25;
+        private readonly int numberOfParts = 15;
         private Guid CurrentIntervalID { get; set; }
 
         protected override void PreStart()
         {
             RouterRef = Context.ActorOf(Props.Create<PasswordCheckerProcessor>().WithRouter
-                (new RoundRobinPool(1, new DefaultResizer(2, Environment.ProcessorCount - 2, backoffThreshold: 0.4, backoffRate: 0.3, messagesPerResize: 3))), "check-router");
+                (new RoundRobinPool(1, new DefaultResizer(3, Environment.ProcessorCount - 2, backoffThreshold: 0.4, backoffRate: 0.3, messagesPerResize: 3))), "check-router");
         }
 
         protected override SupervisorStrategy SupervisorStrategy()
@@ -32,6 +32,15 @@ namespace AbloomWorkingNode.Actors.Processmanager.Processors
                 }
             );
         }
+
+        public IEnumerable<IEnumerable<T>> Split<T>(IEnumerable<T> source, int count)
+        {
+            return source.Select((x, y) => new { Index = y, Value = x })
+                .GroupBy(x => x.Index % count)
+                .Select(x => x.Select(y => y.Value)
+                .ToList()).ToList();
+        }
+
         protected override void OnReceive(object message)
         {
             switch (message)
@@ -41,12 +50,9 @@ namespace AbloomWorkingNode.Actors.Processmanager.Processors
                     RespondPath = Sender.Path.Address + "/user/node/process-manager/password-processor";
                     Counter = data.Passwords.Count;
                     CurrentIntervalID = data.Id;
-                    var numberOfIntervals = (int)Counter / numberOfPasswords;
 
-                    for (int i = 0; i < numberOfIntervals; i++)
-                    {
-                        RouterRef.Tell(new SendToWorkinNode(data.Passwords.Skip(i * numberOfPasswords).Take(numberOfPasswords).ToList(), data.Hash, data.Id));
-                    }
+                    var parts = Split<string>(data.Passwords, numberOfParts);
+                    parts.ToList().ForEach(item => { RouterRef.Tell(new SendToWorkinNode(item.ToList(), data.Hash, data.Id)); });
                     break;
 
                 case RespondPassword data:
