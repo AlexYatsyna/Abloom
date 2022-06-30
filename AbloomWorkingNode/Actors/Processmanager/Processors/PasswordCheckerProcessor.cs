@@ -15,19 +15,10 @@ namespace AbloomWorkingNode.Actors.Processmanager.Processors
             foreach (var password in message.Passwords)
             {
                 Counter++;
-                if (VerificatePassword(password, message.Hash))
+                if (Hasher!.VerifyHashedPassword(message.Hash, password))
                     return new RespondPassword(message.Id, true, Counter, password);
             }
             return new RespondPassword(message.Id, false, message.Passwords.Count, "");
-        }
-
-        private bool VerificatePassword(string password, string hash)
-        {
-            if (Hasher!.VerifyHashedPassword(hash, password))
-            {
-                return true;
-            }
-            return false;
         }
 
         protected override void OnReceive(object message)

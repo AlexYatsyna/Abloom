@@ -72,6 +72,11 @@ namespace Abloom.Actors.Processmanager.Processors
                     Generator = new PasswordGenerator(data.PasswordLength);
                     Context.ActorSelection("../display-processor").Tell(new SetNumberOfCombinations(Generator.NumberOfCombinations));
                     break;
+
+                case Exception ex:
+                    Console.WriteLine(ex);
+                    Context.Parent.Tell("End");
+                    break;
             }
         }
     }

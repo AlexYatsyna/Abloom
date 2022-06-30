@@ -19,6 +19,8 @@ namespace AbloomWorkingNode.Actors
             ClusterManagerRef = Context.ActorOf<ClusterManager>("cluster-manager");
         }
 
+        
+
         protected override void OnReceive(object message)
         {
 
@@ -39,6 +41,7 @@ namespace AbloomWorkingNode.Actors
                 case SendToWorkinNode:
                     ProcessmanagerRef.Forward(message);
                     break;
+
             }
         }
     }

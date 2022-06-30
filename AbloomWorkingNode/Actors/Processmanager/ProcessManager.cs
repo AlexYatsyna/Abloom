@@ -22,6 +22,9 @@ namespace AbloomWorkingNode.Actors.Processmanager
                 case SendToWorkinNode:
                     PasswordBalancerRef.Forward(message);
                     break;
+                case Exception:
+                    Context.Parent.Forward(message);
+                    break;
             }
 
         }

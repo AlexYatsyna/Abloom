@@ -13,7 +13,7 @@ namespace AbloomWorkingNode.Hashers
 
         public override bool VerifyHashedPassword(string hashedPassword, string providedPassword)
         {
-            return CryptographyExtention.Verify(providedPassword + Salt, hashedPassword) ? true : false;
+            return CryptographyExtention.Verify(providedPassword + Salt, hashedPassword);
         }
     }
 }
